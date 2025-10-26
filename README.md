@@ -1,5 +1,4 @@
-# Raylib C project
+# Space Invaders!
 
-Really simple project setup for a Raylib project using C.
+Space Invaders clone in Raylib.
 
-Also some really basic Raylib usage.

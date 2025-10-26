@@ -13,11 +13,19 @@ typedef struct {
 } windowInfo;
 
 windowInfo gameWindow = {0};
-Vector3 cubePosition = {0.0f, -2.5f, 0.0f};
+Vector3 playerPosition = {0.0f, -6.0f, 0.0f};
+Vector3 barrierPosition = {2.0f, -2.5f, 0.0f};
+Vector3 enemyPosition = {2.0f, 2.5f, 0.0f};
+Model playerModel;
+Model enemyModel;
+Model barrierModel;
 
 void draw3dContent() {
   BeginMode3D(gameWindow.camera);
-  DrawCube(cubePosition, 0.5f, 0.5f, 0.5f, RED);
+  DrawModel(playerModel, playerPosition, 1.0f, WHITE);
+  DrawModel(barrierModel, barrierPosition, 1.0f, WHITE);
+  DrawModel(enemyModel, enemyPosition, 1.0f, WHITE);
+  // DrawCube(cubePosition, 0.5f, 0.5f, 0.5f, RED);
   // DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
   EndMode3D();
 }
@@ -35,9 +43,9 @@ bool handleInput() {
     return false;
 
   if (IsKeyDown(KEY_LEFT)) {
-    cubePosition.x -= 0.1;
+    playerPosition.x -= 0.1;
   } else if (IsKeyDown(KEY_RIGHT)) {
-    cubePosition.x += 0.1;
+    playerPosition.x += 0.1;
   }
   return true;
 }
@@ -50,9 +58,21 @@ bool gameLoop() {
   return true;
 }
 
+void loadModels() {
+  playerModel = LoadModel("resources/models/player.glb");
+  enemyModel = LoadModel("resources/models/enemy.glb");
+  barrierModel = LoadModel("resources/models/barrier.glb");
+}
+
+void unloadModels() {
+  UnloadModel(playerModel);
+  UnloadModel(enemyModel);
+  UnloadModel(barrierModel);
+}
+
 Camera3D initCamera3d() {
   Camera3D camera = {0};
-  camera.position = (Vector3){0.0f, 0.0f, 10.0f};
+  camera.position = (Vector3){0.0f, 0.0f, 20.0f};
   camera.target = (Vector3){0.0f, 0.0f, 0.0f};
   camera.up = (Vector3){0.0f, 1.0f, 0.0f};
   camera.fovy = 45.0f;
@@ -79,10 +99,12 @@ void setupScreen(const char *title, int width, int height, bool fullScreen) {
 int main(int argc, char *argv[]) {
   bool run = true;
   setupScreen(GAME_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, false);
+  loadModels();
   while (!WindowShouldClose() && run) {
     run = gameLoop();
   }
 
+  unloadModels();
   CloseWindow();
 
   return 0;

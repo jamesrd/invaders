@@ -16,6 +16,8 @@ windowInfo gameWindow = {0};
 Vector3 playerPosition = {0.0f, -6.0f, 0.0f};
 Vector3 barrierPosition = {2.0f, -2.5f, 0.0f};
 Vector3 enemyPosition = {2.0f, 2.5f, 0.0f};
+Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
+Vector2 groundSize = {40.0f, 20.0f};
 Model playerModel;
 Model enemyModel;
 Model barrierModel;
@@ -25,6 +27,7 @@ void draw3dContent() {
   DrawModel(playerModel, playerPosition, 1.0f, WHITE);
   DrawModel(barrierModel, barrierPosition, 1.0f, WHITE);
   DrawModel(enemyModel, enemyPosition, 1.0f, WHITE);
+  DrawPlane(groundPosition, groundSize, DARKGREEN);
   // DrawCube(cubePosition, 0.5f, 0.5f, 0.5f, RED);
   // DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
   EndMode3D();

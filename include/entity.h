@@ -10,4 +10,12 @@ typedef struct entity_t {
   Color tint;
 } Entity;
 
+typedef struct shot_t {
+  bool enabled;
+  Vector3 pos;
+  Vector3 vel;
+  float radius;
+  Color color;
+} Shot;
+
 #endif

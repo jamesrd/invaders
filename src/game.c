@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 int ENEMY_ROWS = 5;
+#define MAX_PLAYER_SHOTS 4
 
 bool run = true;
 
@@ -14,6 +15,9 @@ WindowInfo gameWindow = {0};
 GameState gameState = {0};
 
 EnemyRow **enemyRows = NULL;
+Shot playerShots[MAX_PLAYER_SHOTS];
+float PLAYER_COOLDOWN = 0.5f;
+float playerShotTimer = 0.0f;
 Vector3 playerPosition = {0.0f, -6.0f, 0.0f};
 Vector3 barrierPosition = {2.0f, -2.5f, 0.0f};
 Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
@@ -30,8 +34,12 @@ void drawEnemies() {
     return;
   for (int i = 0; i < ENEMY_ROWS; i++) {
     EnemyRow *er = enemyRows[i];
+    if (!er->enabled)
+      continue;
     for (int j = 0; j < er->enemyCount; j++) {
-      drawEntity(er->enemies[j].entity);
+      Enemy e = er->enemies[j];
+      if (e.enabled)
+        drawEntity(er->enemies[j].entity);
     }
   }
 }
@@ -42,12 +50,22 @@ void drawBarriers() { DrawModel(barrierModel, barrierPosition, 1.0f, WHITE); }
 
 void drawPlayer() { DrawModel(playerModel, playerPosition, 1.0f, WHITE); }
 
+void drawShots() {
+  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+    if (playerShots[i].enabled) {
+      DrawSphere(playerShots[i].pos, playerShots[i].radius,
+                 playerShots[i].color);
+    }
+  }
+}
+
 void draw3dContent() {
   BeginMode3D(gameWindow.camera);
   drawBackground();
   drawBarriers();
   drawEnemies();
   drawPlayer();
+  drawShots();
   EndMode3D();
 }
 
@@ -75,6 +93,25 @@ void drawFrame() {
   EndDrawing();
 }
 
+void playerShoot() {
+  if (playerShotTimer <= 0.0) {
+    for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+      if (playerShots[i].enabled)
+        continue;
+
+      playerShots[i].enabled = true;
+      playerShots[i].pos = (Vector3){playerPosition.x, playerPosition.y + 1.0f,
+                                     playerPosition.z};
+      playerShots[i].vel = (Vector3){0, 10.0f, 0};
+      playerShots[i].radius = 0.1f;
+      playerShots[i].color = RED;
+      printf("Fire shot!\n");
+      playerShotTimer = PLAYER_COOLDOWN;
+      break;
+    }
+  }
+}
+
 bool handleInput() {
   if (IsKeyReleased(KEY_Q))
     return false;
@@ -82,11 +119,15 @@ bool handleInput() {
   if (gameState.state == Playing) {
     if (IsKeyReleased(KEY_TAB)) {
       gameState.state = Paused;
-    } else if (IsKeyDown(KEY_LEFT)) {
-      playerPosition.x -= 0.1;
-    } else if (IsKeyDown(KEY_RIGHT)) {
+    }
+    if (IsKeyDown(KEY_LEFT)) {
+      playerPosition.x -= 0.1; // FIX - need dT
+    }
+    if (IsKeyDown(KEY_RIGHT)) {
       playerPosition.x += 0.1;
-    } else if (IsKeyDown(KEY_SPACE)) {
+    }
+    if (IsKeyDown(KEY_SPACE)) {
+      playerShoot();
     }
 
   } else {
@@ -98,9 +139,39 @@ bool handleInput() {
   return true;
 }
 
-bool gameLoop() {
+void playerCollisionDetection(float dT) {}
+void movePlayerShots(float dT) {
+  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+    Shot p = playerShots[i];
+    if (p.enabled) {
+      p.pos.x += p.vel.x * dT;
+      p.pos.y += p.vel.y * dT;
+      p.pos.z += p.vel.z * dT;
+      if (p.pos.y > 9.0f)
+        p.enabled = false;
+      playerShots[i] = p;
+    }
+  }
+}
+
+void updateState(float dT) {
+  if (playerShotTimer > 0) {
+    playerShotTimer -= dT;
+  }
+  // move enemy shots & player collision detection
+  playerCollisionDetection(dT);
+  // move player shots
+  movePlayerShots(dT);
+  // update enemy state & enemy collision detection
+}
+
+bool gameLoop(float dT) {
   if (!handleInput())
     return false;
+
+  if (gameState.state == Playing) {
+    updateState(dT);
+  }
 
   drawFrame();
   return true;
@@ -170,7 +241,7 @@ int InitGame(char *title, int width, int height) {
 
 int RunGame() {
   while (!WindowShouldClose() && run) {
-    run = gameLoop();
+    run = gameLoop(GetFrameTime());
   }
 
   unloadModels();

@@ -147,9 +147,77 @@ void movePlayerShots(float dT) {
       p.pos.x += p.vel.x * dT;
       p.pos.y += p.vel.y * dT;
       p.pos.z += p.vel.z * dT;
+      // TODO - find correct end states for a shot:
+      // Out of frame
+      // Barrier collision?
+      // Enemy collision happens when enemies are updated
       if (p.pos.y > 9.0f)
         p.enabled = false;
       playerShots[i] = p;
+    }
+  }
+}
+
+bool checkShotCollision(Shot s, Entity *e) {
+  bool hit = CheckCollisionSpheres(e->pos, e->scale / 2, s.pos, s.radius);
+  return hit;
+}
+
+void checkShotsCollisions(Enemy *e) {
+  for (int k = 0; k < MAX_PLAYER_SHOTS; k++) {
+    if (playerShots[k].enabled &&
+        checkShotCollision(playerShots[k], e->entity)) {
+      playerShots[k].enabled = false;
+      // er->enemies[j].enabled = false;
+      e->enabled = false;
+    }
+  }
+}
+
+void moveEnemy(Enemy *e, Vector3 vel, float dT) {
+  e->entity->pos.x += vel.x * dT;
+  e->entity->pos.y += vel.y * dT;
+  e->entity->pos.z += vel.z * dT;
+}
+
+void updateEnemyRowState(EnemyRow *er) {
+  switch (er->mode) {
+  case Stationary:
+    er->mode = LeftMarch;
+    er->vel = ENEMY_MOVE_LEFT;
+  case LeftMarch:
+    if (er->enemies[0].entity->pos.x < -10) {
+      er->mode = RightMarch;
+      er->vel = ENEMY_MOVE_RIGHT;
+    }
+    break;
+  case RightMarch:
+    if (er->enemies[0].entity->pos.x > -8.5) {
+      er->mode = LeftMarch;
+      er->vel = ENEMY_MOVE_LEFT;
+    }
+    break;
+  case Advancing:
+
+  default:
+    break;
+  }
+}
+
+void updateEnemyState(float dT) {
+  if (enemyRows == NULL)
+    return;
+  for (int i = 0; i < ENEMY_ROWS; i++) {
+    EnemyRow *er = enemyRows[i];
+    if (er->enabled) {
+      updateEnemyRowState(er);
+      for (int j = 0; j < er->enemyCount; j++) {
+        Enemy *e = &er->enemies[j];
+        if (e->enabled) {
+          moveEnemy(e, er->vel, dT);
+          checkShotsCollisions(e);
+        }
+      }
     }
   }
 }
@@ -163,6 +231,7 @@ void updateState(float dT) {
   // move player shots
   movePlayerShots(dT);
   // update enemy state & enemy collision detection
+  updateEnemyState(dT);
 }
 
 bool gameLoop(float dT) {

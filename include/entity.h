@@ -18,4 +18,6 @@ typedef struct shot_t {
   Color color;
 } Shot;
 
+void EntityMove(Entity e, Vector3 d);
+
 #endif

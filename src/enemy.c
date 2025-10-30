@@ -31,7 +31,7 @@ int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row) {
   er->enabled = true;
   er->enemyCount = count;
   er->enemies = ea;
-  er->vel = (Vector2){1.0f, 0};
+  er->vel = (Vector3){0, 0, 0};
   er->mode = Stationary;
 
   *row = er;

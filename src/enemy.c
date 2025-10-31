@@ -120,3 +120,22 @@ int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT) {
   }
   return enemiesAlive;
 }
+
+void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model) {
+  float y = 7.0f;
+  if (enemyData->rows == NULL) {
+    enemyData->rows = calloc(enemyData->rowCount, sizeof(EnemyRow *));
+  } else {
+    enemyData->rows =
+        realloc(enemyData->rows, sizeof(EnemyRow *) * enemyData->rowCount);
+  }
+  for (int i = 0; i < enemyData->rowCount; i++) {
+    EnemyRow *enemyRow = enemyData->rows[i];
+    CreateEnemyRow(y -= 1.5f, enemyCount, model, &enemyRow);
+    enemyData->rows[i] = enemyRow;
+  }
+}
+
+void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel) {
+  setupEnemies(enemyData, enemiesPerRow, enemyModel);
+}

@@ -6,15 +6,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int ENEMY_ROWS = 5;
 #define MAX_PLAYER_SHOTS 4
+#define ENEMY_ROWS 5
+#define ENEMIES_PER_ROW 11
 
 bool run = true;
 
 WindowInfo gameWindow = {0};
 GameState gameState = {0};
+EnemyData enemyData;
 
-EnemyRow **enemyRows = NULL;
 Shot playerShots[MAX_PLAYER_SHOTS];
 float PLAYER_COOLDOWN = 0.5f;
 float playerShotTimer = 0.0f;
@@ -30,10 +31,10 @@ Model barrierModel;
 void drawEntity(Entity *e) { DrawModel(*e->model, e->pos, e->scale, e->tint); }
 
 void drawEnemies() {
-  if (enemyRows == NULL)
+  if (enemyData.rows == NULL)
     return;
-  for (int i = 0; i < ENEMY_ROWS; i++) {
-    EnemyRow *er = enemyRows[i];
+  for (int i = 0; i < enemyData.rowCount; i++) {
+    EnemyRow *er = enemyData.rows[i];
     if (!er->enabled)
       continue;
     for (int j = 0; j < er->enemyCount; j++) {
@@ -217,7 +218,7 @@ void updateState(float dT) {
   // move player shots
   movePlayerShots(dT);
   // update enemy state & enemy collision detection
-  int alive = UpdateEnemyState(enemyRows, ENEMY_ROWS, dT);
+  int alive = UpdateEnemyState(enemyData.rows, enemyData.rowCount, dT);
   if (alive == 0) {
     gameState.state = GameOver;
   }
@@ -273,29 +274,16 @@ void setupScreen(const char *title, int width, int height, bool fullScreen) {
   }
 }
 
-void setupEnemies() {
-  float y = 7.0f;
-  if (enemyRows == NULL) {
-    enemyRows = calloc(ENEMY_ROWS, sizeof(EnemyRow *));
-  } else {
-    enemyRows = realloc(enemyRows, sizeof(EnemyRow *) * ENEMY_ROWS);
-  }
-  for (int i = 0; i < ENEMY_ROWS; i++) {
-    EnemyRow *enemyRow = enemyRows[i];
-    CreateEnemyRow(y -= 1.5f, 11, &enemyModel, &enemyRow);
-    enemyRows[i] = enemyRow;
-  }
-}
-
 void resetGame() {
   gameState.state = Welcome;
   gameState.score = 0;
   gameState.lives = 1;
-  setupEnemies();
+  InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel);
 }
 
 int InitGame(char *title, int width, int height) {
   bool run = true;
+  enemyData.rowCount = ENEMY_ROWS;
   setupScreen(title, width, height, false);
   loadModels();
   resetGame();

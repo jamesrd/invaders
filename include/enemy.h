@@ -28,6 +28,12 @@ typedef struct enemyRow_t {
   Vector3 target;
 } EnemyRow;
 
+typedef struct enemyData_t {
+  int rowCount;
+  EnemyRow **rows;
+} EnemyData;
+
+void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel);
 int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row);
 int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT);
 

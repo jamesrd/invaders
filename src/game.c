@@ -1,4 +1,5 @@
 #include "game.h"
+#include "barrier.h"
 #include "enemy.h"
 #include "entity.h"
 #include "raylib.h"
@@ -9,18 +10,18 @@
 #define MAX_PLAYER_SHOTS 4
 #define ENEMY_ROWS 5
 #define ENEMIES_PER_ROW 11
+#define PLAYER_COOLDOWN 0.5f
 
 bool run = true;
 
 WindowInfo gameWindow = {0};
 GameState gameState = {0};
 EnemyData enemyData;
+BarrierData barrierData;
 
 Shot playerShots[MAX_PLAYER_SHOTS];
-float PLAYER_COOLDOWN = 0.5f;
 float playerShotTimer = 0.0f;
 Vector3 playerPosition = {0.0f, -6.0f, 0.0f};
-Vector3 barrierPosition = {2.0f, -2.5f, 0.0f};
 Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
 Vector2 groundSize = {40.0f, 20.0f};
 
@@ -47,7 +48,14 @@ void drawEnemies() {
 
 void drawBackground() { DrawPlane(groundPosition, groundSize, DARKGREEN); }
 
-void drawBarriers() { DrawModel(barrierModel, barrierPosition, 1.0f, WHITE); }
+void drawBarriers() {
+  for (int i = 0; i < barrierData.count; i++) {
+    Barrier b = barrierData.barriers[i];
+    if (b.hitPoints > 0) {
+      drawEntity(b.entity);
+    }
+  }
+}
 
 void drawPlayer() { DrawModel(playerModel, playerPosition, 1.0f, WHITE); }
 
@@ -279,6 +287,7 @@ void resetGame() {
   gameState.score = 0;
   gameState.lives = 1;
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel);
+  InitBarriers(&barrierData, 4, 4, -3.5, &barrierModel);
 }
 
 int InitGame(char *title, int width, int height) {

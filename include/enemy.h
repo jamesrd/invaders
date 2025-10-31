@@ -27,5 +27,6 @@ typedef struct enemyRow_t {
 } EnemyRow;
 
 int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row);
+int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT);
 
 #endif

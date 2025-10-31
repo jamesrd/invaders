@@ -148,7 +148,7 @@ bool handleInput() {
       gameState.state = Paused;
     }
     if (IsKeyDown(KEY_LEFT)) {
-      playerPosition.x -= 0.1; // FIX - need dT
+      playerPosition.x -= 0.1; // TODO - need dT
     }
     if (IsKeyDown(KEY_RIGHT)) {
       playerPosition.x += 0.1;
@@ -158,7 +158,7 @@ bool handleInput() {
     }
 
   } else {
-    if (IsKeyReleased(KEY_SPACE) || IsKeyReleased(KEY_TAB)) {
+    if (IsKeyReleased(KEY_ENTER) || IsKeyReleased(KEY_TAB)) {
       gameState.state = Playing;
     }
   }
@@ -167,6 +167,7 @@ bool handleInput() {
 }
 
 void playerCollisionDetection(float dT) {}
+
 void movePlayerShots(float dT) {
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     Shot p = playerShots[i];
@@ -203,80 +204,8 @@ bool checkShotsCollisions(Enemy *e) {
   return e->enabled;
 }
 
-void moveEnemy(Enemy *e, Vector3 vel, float dT) {
-  e->entity->pos.x += vel.x * dT;
-  e->entity->pos.y += vel.y * dT;
-  e->entity->pos.z += vel.z * dT;
-}
-
-void updateEnemyRowState(EnemyRow *er) {
-  switch (er->mode) {
-  case Arriving:
-    if (er->enemies[0].entity->pos.z >= er->target.z) {
-      er->prevMode = Arriving;
-      er->mode = LeftMarch;
-      er->vel = ENEMY_MOVE_LEFT;
-      er->target.x = -10;
-    }
-    break;
-  case LeftMarch:
-    if (er->enemies[0].entity->pos.x < er->target.x) {
-      er->prevMode = LeftMarch;
-      er->mode = RightMarch;
-      er->vel = ENEMY_MOVE_RIGHT;
-      er->target.x = -8.5;
-    }
-    break;
-  case RightMarch:
-    if (er->enemies[0].entity->pos.x > er->target.x) {
-      er->prevMode = RightMarch;
-      er->mode = Advancing;
-      er->vel = ENEMY_MOVE_DOWN;
-      er->target.y = er->enemies[0].entity->pos.y - 1.0;
-    }
-    break;
-  case Advancing:
-    if (er->enemies[0].entity->pos.y < er->target.y) {
-      er->prevMode = Advancing;
-      er->mode = LeftMarch;
-      er->vel = ENEMY_MOVE_LEFT;
-      er->target.x = -10;
-    }
-    break;
-  default:
-    break;
-  }
-}
-
-int updateEnemyState(float dT) {
-  int enemiesAlive = 0;
-  if (enemyRows == NULL)
-    return 0;
-  for (int i = 0; i < ENEMY_ROWS; i++) {
-    EnemyRow *er = enemyRows[i];
-    int eir = 0;
-    if (er->enabled) {
-      updateEnemyRowState(er);
-      for (int j = 0; j < er->enemyCount; j++) {
-        Enemy *e = &er->enemies[j];
-        moveEnemy(e, er->vel, dT);
-        if (e->enabled) {
-          if (checkShotsCollisions(e))
-            eir++;
-          // Fix player collision check
-          if (CheckCollisionSpheres(e->entity->pos, e->entity->scale / 2,
-                                    playerPosition, 0.5)) {
-            gameState.lives = 0;
-            gameState.state = GameOver;
-          }
-        }
-      }
-      if (eir == 0)
-        enemyRows[i]->enabled = false;
-    }
-    enemiesAlive += eir;
-  }
-  return enemiesAlive;
+bool checkPlayerCollision(Vector3 v, float radius) {
+  return CheckCollisionSpheres(playerPosition, 0.5, v, radius);
 }
 
 void updateState(float dT) {
@@ -288,7 +217,7 @@ void updateState(float dT) {
   // move player shots
   movePlayerShots(dT);
   // update enemy state & enemy collision detection
-  int alive = updateEnemyState(dT);
+  int alive = UpdateEnemyState(enemyRows, ENEMY_ROWS, dT);
   if (alive == 0) {
     gameState.state = GameOver;
   }

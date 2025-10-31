@@ -7,11 +7,13 @@
 #define ENEMY_MOVE_RIGHT (Vector3){0.5, 0, 0}
 #define ENEMY_MOVE_DOWN (Vector3){0, -0.5, 0}
 #define ENEMY_MOVE_ARRIVE (Vector3){0, 0, 20}
+#define ENEMY_FADE_RATE 500.0f
 
 enum EnemyRowMode { Arriving, Advancing, LeftMarch, RightMarch, Stationary };
+enum EnemyState { Active, Destroyed, Disabled };
 
 typedef struct enemy_t {
-  bool enabled;
+  enum EnemyState state;
   Entity *entity;
   int scoreValue;
 } Enemy;

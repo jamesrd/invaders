@@ -20,7 +20,7 @@ int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row) {
   for (int i = 0; i < count; i++) {
     Enemy *e = &ea[i];
 
-    e->enabled = true;
+    e->state = Active;
     e->entity = malloc(sizeof(Entity));
     e->entity->enabled = true;
     e->entity->model = model;
@@ -99,7 +99,7 @@ int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT) {
       for (int j = 0; j < er->enemyCount; j++) {
         Enemy *e = &er->enemies[j];
         moveEnemy(e, er->vel, dT);
-        if (e->enabled) {
+        if (e->state == Active) {
           if (checkShotsCollisions(e))
             eir++;
           // TODO fix player collision check
@@ -107,6 +107,10 @@ int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT) {
             gameState.lives = 0;
             gameState.state = GameOver;
           }
+        } else if (e->state == Destroyed) {
+          e->entity->tint.a -= (ENEMY_FADE_RATE * dT);
+          if (e->entity->tint.a <= 0.0)
+            e->state = Disabled;
         }
       }
       if (eir == 0)

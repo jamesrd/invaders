@@ -38,7 +38,7 @@ void drawEnemies() {
       continue;
     for (int j = 0; j < er->enemyCount; j++) {
       Enemy e = er->enemies[j];
-      if (e.enabled)
+      if (e.state == Active || e.state == Destroyed)
         drawEntity(er->enemies[j].entity);
     }
   }
@@ -197,11 +197,11 @@ bool checkShotsCollisions(Enemy *e) {
         checkShotCollision(playerShots[k], e->entity)) {
       playerShots[k].enabled = false;
       // er->enemies[j].enabled = false;
-      e->enabled = false;
+      e->state = Destroyed;
       gameState.score += e->scoreValue;
     }
   }
-  return e->enabled;
+  return e->state == Active;
 }
 
 bool checkPlayerCollision(Vector3 v, float radius) {

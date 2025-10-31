@@ -123,9 +123,25 @@ void playerShoot() {
   }
 }
 
+void toggleFullscreen() {
+  ToggleFullscreen();
+  gameWindow.fullScreen = IsWindowFullscreen();
+  if (gameWindow.fullScreen) {
+    gameWindow.width = GetMonitorWidth(0);
+    gameWindow.height = GetMonitorHeight(0);
+  } else {
+    gameWindow.width = GetScreenWidth();
+    gameWindow.height = GetScreenHeight();
+  }
+}
+
 bool handleInput() {
   if (IsKeyReleased(KEY_Q))
     return false;
+
+  if (IsKeyReleased(KEY_F)) {
+    toggleFullscreen();
+  }
 
   if (gameState.state == Playing) {
     if (IsKeyReleased(KEY_TAB)) {

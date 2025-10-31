@@ -9,6 +9,8 @@
 #define ENEMY_MOVE_ARRIVE (Vector3){0, 0, 30}
 #define ENEMY_START_Z -15
 #define ENEMY_FADE_RATE 500.0f
+#define BOSS_COUNTDOWN 10.0
+#define BOSS_SPEED 2.0
 
 enum EnemyRowMode { Arriving, Advancing, LeftMarch, RightMarch, Stationary };
 enum EnemyState { Active, Destroyed, Disabled };
@@ -35,6 +37,9 @@ typedef struct enemyData_t {
   float xTargetLeft;
   float xTargetRight;
   float yAdvance;
+  Enemy *boss;
+  float timeToBoss;
+  bool bossActive;
 } EnemyData;
 
 void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel);

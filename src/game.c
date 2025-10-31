@@ -53,6 +53,9 @@ void drawEnemies() {
         drawEntity(er->enemies[j].entity);
     }
   }
+  if (enemyData.boss->state != Disabled) {
+    drawEntity(enemyData.boss->entity);
+  }
 }
 
 void drawBackground() { DrawPlane(groundPosition, groundSize, DARKGREEN); }

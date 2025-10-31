@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BOSS_END gameWindow.camera.position.z / 2 + 2
+#define BOSS_BEGIN -(gameWindow.camera.position.z / 2 + 2)
+
 int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row) {
   float xStart = -(gameWindow.camera.position.z / 2);
   float xGap = (11 * 1.75) / count;
@@ -95,6 +98,36 @@ void updateEnemyRowState(EnemyData *data, EnemyRow *er) {
   }
 }
 
+void updateBossState(EnemyData *data, float dT) {
+  switch (data->boss->state) {
+  case Active:
+    data->boss->entity->pos.x += BOSS_SPEED * dT;
+    if (data->boss->entity->pos.x > BOSS_END) {
+      data->boss->state = Disabled;
+      data->boss->entity->pos.x = BOSS_BEGIN;
+      data->timeToBoss = BOSS_COUNTDOWN;
+    } else if (!checkShotsToEnemy(data->boss)) {
+      data->boss->state = Destroyed;
+    }
+    break;
+  case Destroyed:
+    data->boss->entity->tint.a -= (ENEMY_FADE_RATE * dT);
+    if (data->boss->entity->tint.a <= 0.0) {
+      data->boss->state = Disabled;
+      data->boss->entity->pos.x = BOSS_BEGIN;
+      data->timeToBoss = BOSS_COUNTDOWN;
+      data->boss->entity->tint.a = 255;
+    }
+    break;
+  case Disabled:
+    data->timeToBoss -= dT;
+    if (data->timeToBoss <= 0.0) {
+      data->boss->state = Active;
+    }
+    break;
+  }
+}
+
 int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
   int enemiesAlive = 0;
   if (data == NULL || data->rows == NULL)
@@ -126,6 +159,7 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
     }
     enemiesAlive += eir;
   }
+  updateBossState(data, dT);
   return enemiesAlive;
 }
 
@@ -143,6 +177,24 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model) {
     CreateEnemyRow(y -= yGap, enemyCount, model, &enemyRow);
     enemyData->rows[i] = enemyRow;
   }
+  enemyData->timeToBoss = BOSS_COUNTDOWN;
+  if (enemyData->boss != NULL) {
+    if (enemyData->boss->entity != NULL) {
+      free(enemyData->boss->entity);
+    }
+    enemyData->boss = realloc(enemyData->boss, sizeof(Enemy));
+  } else {
+    enemyData->boss = malloc(sizeof(Enemy));
+  }
+  enemyData->boss->scoreValue = 100;
+  enemyData->boss->state = Disabled;
+  enemyData->boss->entity = malloc(sizeof(Entity));
+  enemyData->boss->entity->enabled = true;
+  enemyData->boss->entity->model = model;
+  enemyData->boss->entity->scale = 1.0f;
+  enemyData->boss->entity->tint = WHITE;
+  enemyData->boss->entity->pos =
+      (Vector3){BOSS_BEGIN, gameWindow.camera.position.z / 3, 0};
 }
 
 void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel) {

@@ -19,6 +19,7 @@ typedef struct {
 
 typedef struct {
   int score;
+  int highScore;
   enum GameStates state;
   int lives;
 } GameState;

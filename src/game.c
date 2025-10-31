@@ -7,10 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void resetGame();
 #define MAX_PLAYER_SHOTS 4
 #define ENEMY_ROWS 5
 #define ENEMIES_PER_ROW 11
 #define PLAYER_COOLDOWN 0.5f
+#define SCORE_STRING "SCORE - %d <> HIGH SCORE - %d"
 
 bool run = true;
 
@@ -86,7 +88,7 @@ void draw3dContent() {
 }
 
 void drawUI() {
-  char score[30];
+  char score[100];
   switch (gameState.state) {
   case Welcome:
     DrawTextCentered("SPACE INVADERS!", gameWindow.xCenter, gameWindow.yCenter,
@@ -95,8 +97,9 @@ void drawUI() {
   case Paused:
     DrawTextCentered("PAUSED", gameWindow.xCenter, gameWindow.yCenter,
                      gameWindow.fontLargeSize, WHITE);
-    snprintf(score, 29, "SCORE: %d", gameState.score);
-    DrawText(score, 0, 0, gameWindow.fontSmallSize, WHITE);
+    snprintf(score, 99, SCORE_STRING, gameState.score, gameState.highScore);
+    DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
+                     gameWindow.fontSmallSize, WHITE);
     break;
   case GameOver:
     if (gameState.lives > 0)
@@ -105,11 +108,13 @@ void drawUI() {
     else
       DrawTextCentered("YOU LOSE!", gameWindow.xCenter, gameWindow.yCenter,
                        gameWindow.fontLargeSize, WHITE);
-    snprintf(score, 29, "SCORE: %d", gameState.score);
-    DrawText(score, 0, 0, gameWindow.fontSmallSize, WHITE);
+    snprintf(score, 99, SCORE_STRING, gameState.score, gameState.highScore);
+    DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
+                     gameWindow.fontSmallSize, WHITE);
   default:
-    snprintf(score, 29, "SCORE: %d", gameState.score);
-    DrawText(score, 0, 0, gameWindow.fontSmallSize, WHITE);
+    snprintf(score, 99, SCORE_STRING, gameState.score, gameState.highScore);
+    DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
+                     gameWindow.fontSmallSize, WHITE);
   }
 }
 
@@ -174,9 +179,16 @@ bool handleInput() {
       playerShoot();
     }
 
-  } else {
+  } else if (gameState.state == Paused || gameState.state == Welcome) {
     if (IsKeyReleased(KEY_ENTER) || IsKeyReleased(KEY_TAB)) {
       gameState.state = Playing;
+    } else if (IsKeyReleased(KEY_N)) {
+      resetGame();
+    }
+  } else if (gameState.state == GameOver) {
+    if (IsKeyReleased(KEY_ENTER) || IsKeyReleased(KEY_TAB) ||
+        IsKeyReleased(KEY_N)) {
+      resetGame();
     }
   }
 
@@ -316,6 +328,9 @@ void setupScreen(const char *title, int width, int height, bool fullScreen) {
 
 void resetGame() {
   gameState.state = Welcome;
+  if (gameState.score > gameState.highScore) {
+    gameState.highScore = gameState.score;
+  }
   gameState.score = 0;
   gameState.lives = 1;
   playerPosition.x = 0;
@@ -326,6 +341,9 @@ void resetGame() {
   groundSize.y = gameWindow.camera.position.z / 5;
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel);
   InitBarriers(&barrierData, 4, 4, playerPosition.y + 2, &barrierModel);
+  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+    playerShots[i].enabled = false;
+  }
 }
 
 int InitGame(char *title, int width, int height) {

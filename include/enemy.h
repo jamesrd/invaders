@@ -3,10 +3,11 @@
 
 #include "entity.h"
 #include "raylib.h"
-#define ENEMY_MOVE_LEFT (Vector3){-0.2, 0, 0}
-#define ENEMY_MOVE_RIGHT (Vector3){0.2, 0, 0}
+#define ENEMY_MOVE_LEFT (Vector3){-1.0, 0, 0}
+#define ENEMY_MOVE_RIGHT (Vector3){1.0, 0, 0}
 #define ENEMY_MOVE_DOWN (Vector3){0, -1.0, 0}
-#define ENEMY_MOVE_ARRIVE (Vector3){0, 0, 20}
+#define ENEMY_MOVE_ARRIVE (Vector3){0, 0, 30}
+#define ENEMY_START_Z -15
 #define ENEMY_FADE_RATE 500.0f
 
 enum EnemyRowMode { Arriving, Advancing, LeftMarch, RightMarch, Stationary };
@@ -31,10 +32,13 @@ typedef struct enemyRow_t {
 typedef struct enemyData_t {
   int rowCount;
   EnemyRow **rows;
+  float xTargetLeft;
+  float xTargetRight;
+  float yAdvance;
 } EnemyData;
 
 void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel);
 int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row);
-int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT);
+int UpdateEnemyState(EnemyData *ed, int rowCount, float dT);
 
 #endif

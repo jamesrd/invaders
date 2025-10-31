@@ -8,7 +8,11 @@ enum GameStates { Welcome, Paused, Playing, GameOver };
 
 typedef struct {
   int width;
+  int xCenter;
   int height;
+  int yCenter;
+  int fontSmallSize;
+  int fontLargeSize;
   bool fullScreen;
   Camera3D camera;
 } WindowInfo;
@@ -25,5 +29,6 @@ bool checkShotsToEnemy(Enemy *e);
 bool checkEnemyRowWin(Vector3 v, float radius);
 
 extern GameState gameState;
+extern WindowInfo gameWindow;
 
 #endif

@@ -23,11 +23,18 @@ Shot playerShots[MAX_PLAYER_SHOTS];
 float playerShotTimer = 0.0f;
 Vector3 playerPosition = {0.0f, -6.0f, 0.0f};
 Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
-Vector2 groundSize = {40.0f, 20.0f};
+Vector2 groundSize = {40.0f, 10.0f};
 
 Model playerModel;
 Model enemyModel;
 Model barrierModel;
+
+void updateScreenHelpers() {
+  gameWindow.xCenter = gameWindow.width / 2;
+  gameWindow.yCenter = gameWindow.height / 2;
+  gameWindow.fontSmallSize = gameWindow.height / 30;
+  gameWindow.fontLargeSize = gameWindow.height / 15;
+}
 
 void drawEntity(Entity *e) { DrawModel(*e->model, e->pos, e->scale, e->tint); }
 
@@ -82,27 +89,27 @@ void drawUI() {
   char score[30];
   switch (gameState.state) {
   case Welcome:
-    DrawTextCentered("SPACE INVADERS!", gameWindow.width / 2,
-                     gameWindow.height / 2, 45, WHITE);
+    DrawTextCentered("SPACE INVADERS!", gameWindow.xCenter, gameWindow.yCenter,
+                     45, WHITE);
     break;
   case Paused:
-    DrawTextCentered("PAUSED", gameWindow.width / 2, gameWindow.height / 2, 40,
-                     WHITE);
+    DrawTextCentered("PAUSED", gameWindow.xCenter, gameWindow.yCenter,
+                     gameWindow.fontLargeSize, WHITE);
     snprintf(score, 29, "SCORE: %d", gameState.score);
-    DrawText(score, 0, 0, 20, WHITE);
+    DrawText(score, 0, 0, gameWindow.fontSmallSize, WHITE);
     break;
   case GameOver:
     if (gameState.lives > 0)
-      DrawTextCentered("YOU WIN!", gameWindow.width / 2, gameWindow.height / 2,
-                       40, WHITE);
+      DrawTextCentered("YOU WIN!", gameWindow.xCenter, gameWindow.yCenter,
+                       gameWindow.fontLargeSize, WHITE);
     else
-      DrawTextCentered("YOU LOSE!", gameWindow.width / 2, gameWindow.height / 2,
-                       40, WHITE);
+      DrawTextCentered("YOU LOSE!", gameWindow.xCenter, gameWindow.yCenter,
+                       gameWindow.fontLargeSize, WHITE);
     snprintf(score, 29, "SCORE: %d", gameState.score);
-    DrawText(score, 0, 0, 20, WHITE);
+    DrawText(score, 0, 0, gameWindow.fontSmallSize, WHITE);
   default:
     snprintf(score, 29, "SCORE: %d", gameState.score);
-    DrawText(score, 0, 0, 20, WHITE);
+    DrawText(score, 0, 0, gameWindow.fontSmallSize, WHITE);
   }
 }
 
@@ -142,6 +149,7 @@ void toggleFullscreen() {
     gameWindow.width = GetScreenWidth();
     gameWindow.height = GetScreenHeight();
   }
+  updateScreenHelpers();
 }
 
 bool handleInput() {
@@ -226,10 +234,11 @@ void movePlayerShots(float dT) {
       p.pos.x += p.vel.x * dT;
       p.pos.y += p.vel.y * dT;
       p.pos.z += p.vel.z * dT;
-      // Enemy collision happens when enemies are updated
 
       // TODO - find correct end states for a shot:
-      p.enabled = p.pos.y < 9.0f && !checkShotHitsBarrier(&p);
+      p.enabled = p.pos.y < gameWindow.camera.position.z / 2 &&
+                  !checkShotHitsBarrier(&p);
+      // Enemy collision happens when enemies are updated
 
       playerShots[i] = p;
     }
@@ -248,7 +257,7 @@ void updateState(float dT) {
   // move player shots
   movePlayerShots(dT);
   // update enemy state & enemy collision detection
-  int alive = UpdateEnemyState(enemyData.rows, enemyData.rowCount, dT);
+  int alive = UpdateEnemyState(&enemyData, enemyData.rowCount, dT);
   if (alive == 0) {
     gameState.state = GameOver;
   }
@@ -280,7 +289,7 @@ void unloadModels() {
 
 Camera3D initCamera3d() {
   Camera3D camera = {0};
-  camera.position = (Vector3){0.0f, 0.0f, 20.0f};
+  camera.position = (Vector3){0.0f, 0.0f, 25.0f};
   camera.target = (Vector3){0.0f, 0.0f, 0.0f};
   camera.up = (Vector3){0.0f, 1.0f, 0.0f};
   camera.fovy = 45.0f;
@@ -302,14 +311,21 @@ void setupScreen(const char *title, int width, int height, bool fullScreen) {
     SetWindowSize(gameWindow.width, gameWindow.height);
     ToggleFullscreen();
   }
+  updateScreenHelpers();
 }
 
 void resetGame() {
   gameState.state = Welcome;
   gameState.score = 0;
   gameState.lives = 1;
+  playerPosition.x = 0;
+  playerPosition.z = 0;
+  playerPosition.y = gameWindow.camera.position.z * -0.30;
+  groundPosition.y = playerPosition.y - 1;
+  groundSize.x = gameWindow.camera.position.z * 1.5;
+  groundSize.y = gameWindow.camera.position.z / 5;
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel);
-  InitBarriers(&barrierData, 4, 4, -3.5, &barrierModel);
+  InitBarriers(&barrierData, 4, 4, playerPosition.y + 2, &barrierModel);
 }
 
 int InitGame(char *title, int width, int height) {

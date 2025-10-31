@@ -79,6 +79,14 @@ void drawUI() {
   case Paused:
     DrawTextCentered("PAUSED", gameWindow.width / 2, gameWindow.height / 2, 40,
                      WHITE);
+    snprintf(score, 29, "SCORE: %d", gameState.score);
+    DrawText(score, 0, 0, 20, WHITE);
+    break;
+  case GameOver:
+    DrawTextCentered("YOU WIN!", gameWindow.width / 2, gameWindow.height / 2,
+                     40, WHITE);
+    snprintf(score, 29, "SCORE: %d", gameState.score);
+    DrawText(score, 0, 0, 20, WHITE);
   default:
     snprintf(score, 29, "SCORE: %d", gameState.score);
     DrawText(score, 0, 0, 20, WHITE);
@@ -163,15 +171,17 @@ bool checkShotCollision(Shot s, Entity *e) {
   return hit;
 }
 
-void checkShotsCollisions(Enemy *e) {
+bool checkShotsCollisions(Enemy *e) {
   for (int k = 0; k < MAX_PLAYER_SHOTS; k++) {
     if (playerShots[k].enabled &&
         checkShotCollision(playerShots[k], e->entity)) {
       playerShots[k].enabled = false;
       // er->enemies[j].enabled = false;
       e->enabled = false;
+      gameState.score += e->scoreValue;
     }
   }
+  return e->enabled;
 }
 
 void moveEnemy(Enemy *e, Vector3 vel, float dT) {
@@ -204,22 +214,27 @@ void updateEnemyRowState(EnemyRow *er) {
   }
 }
 
-void updateEnemyState(float dT) {
+int updateEnemyState(float dT) {
+  int enemiesAlive = 0;
   if (enemyRows == NULL)
-    return;
+    return 0;
   for (int i = 0; i < ENEMY_ROWS; i++) {
     EnemyRow *er = enemyRows[i];
+    int eir = 0;
     if (er->enabled) {
       updateEnemyRowState(er);
       for (int j = 0; j < er->enemyCount; j++) {
         Enemy *e = &er->enemies[j];
+        moveEnemy(e, er->vel, dT);
         if (e->enabled) {
-          moveEnemy(e, er->vel, dT);
-          checkShotsCollisions(e);
+          if (checkShotsCollisions(e))
+            eir++;
         }
       }
     }
+    enemiesAlive += eir;
   }
+  return enemiesAlive;
 }
 
 void updateState(float dT) {
@@ -231,7 +246,10 @@ void updateState(float dT) {
   // move player shots
   movePlayerShots(dT);
   // update enemy state & enemy collision detection
-  updateEnemyState(dT);
+  int alive = updateEnemyState(dT);
+  if (alive == 0) {
+    gameState.state = GameOver;
+  }
 }
 
 bool gameLoop(float dT) {

@@ -26,6 +26,7 @@ int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row) {
     e->entity->pos = (Vector3){-9.625 + (i * 1.75), y, 0.0f};
     e->entity->scale = 1.0f;
     e->entity->tint = WHITE;
+    e->scoreValue = 10;
   }
 
   er->enabled = true;

@@ -12,6 +12,7 @@ enum EnemyRowMode { Advancing, LeftMarch, RightMarch, Stationary };
 typedef struct enemy_t {
   bool enabled;
   Entity *entity;
+  int scoreValue;
 } Enemy;
 
 typedef struct enemyRow_t {

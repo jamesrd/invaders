@@ -177,35 +177,16 @@ bool handleInput() {
 
 void playerCollisionDetection(float dT) {}
 
-void movePlayerShots(float dT) {
-  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
-    Shot p = playerShots[i];
-    if (p.enabled) {
-      p.pos.x += p.vel.x * dT;
-      p.pos.y += p.vel.y * dT;
-      p.pos.z += p.vel.z * dT;
-      // TODO - find correct end states for a shot:
-      // Out of frame
-      // Barrier collision?
-      // Enemy collision happens when enemies are updated
-      if (p.pos.y > 9.0f)
-        p.enabled = false;
-      playerShots[i] = p;
-    }
-  }
-}
-
 bool checkShotCollision(Shot s, Entity *e) {
   bool hit = CheckCollisionSpheres(e->pos, e->scale / 2, s.pos, s.radius);
   return hit;
 }
 
-bool checkShotsCollisions(Enemy *e) {
+bool checkShotsToEnemy(Enemy *e) {
   for (int k = 0; k < MAX_PLAYER_SHOTS; k++) {
     if (playerShots[k].enabled &&
         checkShotCollision(playerShots[k], e->entity)) {
       playerShots[k].enabled = false;
-      // er->enemies[j].enabled = false;
       e->state = Destroyed;
       gameState.score += e->scoreValue;
     }
@@ -213,15 +194,56 @@ bool checkShotsCollisions(Enemy *e) {
   return e->state == Active;
 }
 
+bool checkShotHitsBarrier(Shot *s) {
+  for (int i = 0; i < barrierData.count; i++) {
+    Barrier barrier = barrierData.barriers[i];
+    if (barrier.hitPoints > 0) {
+      BoundingBox b = GetModelBoundingBox(*barrier.entity->model);
+      b.max.x += barrier.entity->pos.x;
+      b.max.y += barrier.entity->pos.y;
+      b.max.z += barrier.entity->pos.z;
+      b.min.x += barrier.entity->pos.x;
+      b.min.y += barrier.entity->pos.y;
+      b.min.z += barrier.entity->pos.z;
+      if (CheckCollisionBoxSphere(b, s->pos, s->radius)) {
+        barrierData.barriers[i].hitPoints--;
+        barrierData.barriers[i].entity->tint.a *= 0.5;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool checkPlayerCollision(Vector3 v, float radius) {
   return CheckCollisionSpheres(playerPosition, 0.5, v, radius);
 }
+
+void movePlayerShots(float dT) {
+  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+    Shot p = playerShots[i];
+    if (p.enabled) {
+      p.pos.x += p.vel.x * dT;
+      p.pos.y += p.vel.y * dT;
+      p.pos.z += p.vel.z * dT;
+      // Enemy collision happens when enemies are updated
+
+      // TODO - find correct end states for a shot:
+      p.enabled = p.pos.y < 9.0f && !checkShotHitsBarrier(&p);
+
+      playerShots[i] = p;
+    }
+  }
+}
+
+void moveEnemyShots(float dT) {}
 
 void updateState(float dT) {
   if (playerShotTimer > 0) {
     playerShotTimer -= dT;
   }
   // move enemy shots & player collision detection
+  moveEnemyShots(dT);
   playerCollisionDetection(dT);
   // move player shots
   movePlayerShots(dT);

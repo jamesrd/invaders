@@ -100,7 +100,7 @@ int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT) {
         Enemy *e = &er->enemies[j];
         moveEnemy(e, er->vel, dT);
         if (e->state == Active) {
-          if (checkShotsCollisions(e))
+          if (checkShotsToEnemy(e))
             eir++;
           // TODO fix player collision check
           if (checkPlayerCollision(e->entity->pos, e->entity->scale / 2)) {

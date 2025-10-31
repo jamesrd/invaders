@@ -21,7 +21,7 @@ typedef struct {
 
 int InitGame(char *title, int width, int height);
 int RunGame();
-bool checkShotsCollisions(Enemy *e);
+bool checkShotsToEnemy(Enemy *e);
 bool checkPlayerCollision(Vector3 v, float radius);
 
 extern GameState gameState;

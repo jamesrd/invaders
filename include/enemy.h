@@ -42,7 +42,8 @@ typedef struct enemyData_t {
   bool bossActive;
 } EnemyData;
 
-void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel);
+void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel,
+                 Model *bossModel);
 int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row);
 int UpdateEnemyState(EnemyData *ed, int rowCount, float dT);
 

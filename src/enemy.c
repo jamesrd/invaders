@@ -163,7 +163,8 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
   return enemiesAlive;
 }
 
-void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model) {
+void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
+                  Model *bossModel) {
   float y = gameWindow.camera.position.z / 3;
   float yGap = (5 * 1.5) / enemyData->rowCount;
   if (enemyData->rows == NULL) {
@@ -190,17 +191,18 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model) {
   enemyData->boss->state = Disabled;
   enemyData->boss->entity = malloc(sizeof(Entity));
   enemyData->boss->entity->enabled = true;
-  enemyData->boss->entity->model = model;
+  enemyData->boss->entity->model = bossModel;
   enemyData->boss->entity->scale = 1.0f;
   enemyData->boss->entity->tint = WHITE;
   enemyData->boss->entity->pos =
       (Vector3){BOSS_BEGIN, gameWindow.camera.position.z / 3, 0};
 }
 
-void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel) {
+void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel,
+                 Model *bossModel) {
   enemyData->xTargetLeft = -(gameWindow.camera.position.z / 2);
   float xGap = gameWindow.camera.position.z / 2 - 17.5;
   enemyData->xTargetRight = xGap;
   enemyData->yAdvance = -1.0;
-  setupEnemies(enemyData, enemiesPerRow, enemyModel);
+  setupEnemies(enemyData, enemiesPerRow, enemyModel, bossModel);
 }

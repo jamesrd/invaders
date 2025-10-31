@@ -30,6 +30,7 @@ Vector2 groundSize = {40.0f, 10.0f};
 Model playerModel;
 Model enemyModel;
 Model barrierModel;
+Model bossModel;
 
 void updateScreenHelpers() {
   gameWindow.xCenter = gameWindow.width / 2;
@@ -293,6 +294,7 @@ bool gameLoop(float dT) {
 void loadModels() {
   playerModel = LoadModel("resources/models/player.glb");
   enemyModel = LoadModel("resources/models/enemy.glb");
+  bossModel = LoadModel("resources/models/boss.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
 }
 
@@ -342,7 +344,7 @@ void resetGame() {
   groundPosition.y = playerPosition.y - 1;
   groundSize.x = gameWindow.camera.position.z * 1.5;
   groundSize.y = gameWindow.camera.position.z / 5;
-  InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel);
+  InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel, &bossModel);
   InitBarriers(&barrierData, 4, 4, playerPosition.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     playerShots[i].enabled = false;

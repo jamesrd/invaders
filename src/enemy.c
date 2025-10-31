@@ -61,9 +61,9 @@ void updateEnemyRowState(EnemyRow *er) {
   case LeftMarch:
     if (er->enemies[0].entity->pos.x < er->target.x) {
       er->prevMode = LeftMarch;
-      er->mode = RightMarch;
-      er->vel = ENEMY_MOVE_RIGHT;
-      er->target.x = -8.5;
+      er->mode = Advancing;
+      er->vel = ENEMY_MOVE_DOWN;
+      er->target.y = er->enemies[0].entity->pos.y - 1.0;
     }
     break;
   case RightMarch:
@@ -76,10 +76,16 @@ void updateEnemyRowState(EnemyRow *er) {
     break;
   case Advancing:
     if (er->enemies[0].entity->pos.y < er->target.y) {
+      if (er->prevMode == RightMarch) {
+        er->mode = LeftMarch;
+        er->vel = ENEMY_MOVE_LEFT;
+        er->target.x = -10;
+      } else if (er->prevMode == LeftMarch) {
+        er->mode = RightMarch;
+        er->vel = ENEMY_MOVE_RIGHT;
+        er->target.x = -8.5;
+      }
       er->prevMode = Advancing;
-      er->mode = LeftMarch;
-      er->vel = ENEMY_MOVE_LEFT;
-      er->target.x = -10;
     }
     break;
   default:
@@ -96,14 +102,14 @@ int UpdateEnemyState(EnemyRow **rows, int rowCount, float dT) {
     int eir = 0;
     if (er->enabled) {
       updateEnemyRowState(er);
+
       for (int j = 0; j < er->enemyCount; j++) {
         Enemy *e = &er->enemies[j];
         moveEnemy(e, er->vel, dT);
         if (e->state == Active) {
           if (checkShotsToEnemy(e))
             eir++;
-          // TODO fix player collision check
-          if (checkPlayerCollision(e->entity->pos, e->entity->scale / 2)) {
+          if (checkEnemyRowWin(e->entity->pos, e->entity->scale / 2)) {
             gameState.lives = 0;
             gameState.state = GameOver;
           }

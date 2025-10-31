@@ -215,8 +215,8 @@ bool checkShotHitsBarrier(Shot *s) {
   return false;
 }
 
-bool checkPlayerCollision(Vector3 v, float radius) {
-  return CheckCollisionSpheres(playerPosition, 0.5, v, radius);
+bool checkEnemyRowWin(Vector3 v, float radius) {
+  return v.y - radius < playerPosition.y + 0.5;
 }
 
 void movePlayerShots(float dT) {

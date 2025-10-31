@@ -3,9 +3,9 @@
 
 #include "entity.h"
 #include "raylib.h"
-#define ENEMY_MOVE_LEFT (Vector3){-0.5, 0, 0}
-#define ENEMY_MOVE_RIGHT (Vector3){0.5, 0, 0}
-#define ENEMY_MOVE_DOWN (Vector3){0, -0.5, 0}
+#define ENEMY_MOVE_LEFT (Vector3){-0.2, 0, 0}
+#define ENEMY_MOVE_RIGHT (Vector3){0.2, 0, 0}
+#define ENEMY_MOVE_DOWN (Vector3){0, -1.0, 0}
 #define ENEMY_MOVE_ARRIVE (Vector3){0, 0, 20}
 #define ENEMY_FADE_RATE 500.0f
 

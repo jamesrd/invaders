@@ -83,8 +83,12 @@ void drawUI() {
     DrawText(score, 0, 0, 20, WHITE);
     break;
   case GameOver:
-    DrawTextCentered("YOU WIN!", gameWindow.width / 2, gameWindow.height / 2,
-                     40, WHITE);
+    if (gameState.lives > 0)
+      DrawTextCentered("YOU WIN!", gameWindow.width / 2, gameWindow.height / 2,
+                       40, WHITE);
+    else
+      DrawTextCentered("YOU LOSE!", gameWindow.width / 2, gameWindow.height / 2,
+                       40, WHITE);
     snprintf(score, 29, "SCORE: %d", gameState.score);
     DrawText(score, 0, 0, 20, WHITE);
   default:
@@ -113,7 +117,6 @@ void playerShoot() {
       playerShots[i].vel = (Vector3){0, 10.0f, 0};
       playerShots[i].radius = 0.1f;
       playerShots[i].color = RED;
-      printf("Fire shot!\n");
       playerShotTimer = PLAYER_COOLDOWN;
       break;
     }
@@ -192,23 +195,38 @@ void moveEnemy(Enemy *e, Vector3 vel, float dT) {
 
 void updateEnemyRowState(EnemyRow *er) {
   switch (er->mode) {
-  case Stationary:
-    er->mode = LeftMarch;
-    er->vel = ENEMY_MOVE_LEFT;
+  case Arriving:
+    if (er->enemies[0].entity->pos.z >= er->target.z) {
+      er->prevMode = Arriving;
+      er->mode = LeftMarch;
+      er->vel = ENEMY_MOVE_LEFT;
+      er->target.x = -10;
+    }
+    break;
   case LeftMarch:
-    if (er->enemies[0].entity->pos.x < -10) {
+    if (er->enemies[0].entity->pos.x < er->target.x) {
+      er->prevMode = LeftMarch;
       er->mode = RightMarch;
       er->vel = ENEMY_MOVE_RIGHT;
+      er->target.x = -8.5;
     }
     break;
   case RightMarch:
-    if (er->enemies[0].entity->pos.x > -8.5) {
-      er->mode = LeftMarch;
-      er->vel = ENEMY_MOVE_LEFT;
+    if (er->enemies[0].entity->pos.x > er->target.x) {
+      er->prevMode = RightMarch;
+      er->mode = Advancing;
+      er->vel = ENEMY_MOVE_DOWN;
+      er->target.y = er->enemies[0].entity->pos.y - 1.0;
     }
     break;
   case Advancing:
-
+    if (er->enemies[0].entity->pos.y < er->target.y) {
+      er->prevMode = Advancing;
+      er->mode = LeftMarch;
+      er->vel = ENEMY_MOVE_LEFT;
+      er->target.x = -10;
+    }
+    break;
   default:
     break;
   }
@@ -229,8 +247,16 @@ int updateEnemyState(float dT) {
         if (e->enabled) {
           if (checkShotsCollisions(e))
             eir++;
+          // Fix player collision check
+          if (CheckCollisionSpheres(e->entity->pos, e->entity->scale / 2,
+                                    playerPosition, 0.5)) {
+            gameState.lives = 0;
+            gameState.state = GameOver;
+          }
         }
       }
+      if (eir == 0)
+        enemyRows[i]->enabled = false;
     }
     enemiesAlive += eir;
   }
@@ -304,7 +330,11 @@ void setupScreen(const char *title, int width, int height, bool fullScreen) {
 
 void setupEnemies() {
   float y = 7.0f;
-  enemyRows = calloc(ENEMY_ROWS, sizeof(EnemyRow *));
+  if (enemyRows == NULL) {
+    enemyRows = calloc(ENEMY_ROWS, sizeof(EnemyRow *));
+  } else {
+    enemyRows = realloc(enemyRows, sizeof(EnemyRow *) * ENEMY_ROWS);
+  }
   for (int i = 0; i < ENEMY_ROWS; i++) {
     EnemyRow *enemyRow = enemyRows[i];
     CreateEnemyRow(y -= 1.5f, 11, &enemyModel, &enemyRow);
@@ -315,6 +345,7 @@ void setupEnemies() {
 void resetGame() {
   gameState.state = Welcome;
   gameState.score = 0;
+  gameState.lives = 1;
   setupEnemies();
 }
 

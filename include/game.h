@@ -16,6 +16,7 @@ typedef struct {
 typedef struct {
   int score;
   enum GameStates state;
+  int lives;
 } GameState;
 
 int InitGame(char *title, int width, int height);

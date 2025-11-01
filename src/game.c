@@ -16,8 +16,10 @@ void resetGame();
 #define PLAYER_X_VEL 10.0
 #define PLAYER_FADE_RATE 500.0f
 #define SCORE_STRING "LIVES: %d <> SCORE: %d <> HIGH SCORE: %d"
+#define TARGET_FPS 60
 
 bool run = true;
+bool showFps = false;
 
 WindowInfo gameWindow = {0};
 GameState gameState = {0};
@@ -104,6 +106,8 @@ void draw3dContent() {
 
 void drawUI() {
   char score[100];
+  if (showFps)
+    DrawFPS(10, 10);
   switch (gameState.state) {
   case Welcome:
     DrawTextCentered("SPACE INVADERS!", gameWindow.xCenter, gameWindow.yCenter,
@@ -193,6 +197,9 @@ void toggleFullscreen() {
 bool handleInput() {
   if (IsKeyReleased(KEY_Q))
     return false;
+
+  if (IsKeyReleased(KEY_ONE))
+    showFps = !showFps;
 
   if (IsKeyReleased(KEY_F)) {
     toggleFullscreen();
@@ -388,7 +395,7 @@ void setupScreen(const char *title, int width, int height, bool fullScreen) {
   gameWindow.fullScreen = fullScreen;
   gameWindow.camera = initCamera3d();
   InitWindow(width, height, title);
-  SetTargetFPS(60);
+  SetTargetFPS(TARGET_FPS);
   if (fullScreen) {
     int monitor = GetCurrentMonitor();
     gameWindow.width = GetMonitorWidth(monitor);

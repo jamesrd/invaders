@@ -8,7 +8,8 @@
 #define BOSS_END gameWindow.camera.position.z / 2 + 2
 #define BOSS_BEGIN -(gameWindow.camera.position.z / 2 + 2)
 
-int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row) {
+int CreateEnemyRow(float y, int count, bool canShoot, Model *model,
+                   EnemyRow **row) {
   float xStart = -(gameWindow.camera.position.z / 2);
   float xGap = (11 * 1.75) / count;
   Enemy *ea = calloc(count, sizeof(Enemy));
@@ -42,6 +43,7 @@ int CreateEnemyRow(float y, int count, Model *model, EnemyRow **row) {
   er->mode = Arriving;
   er->prevMode = Stationary;
   er->target = (Vector3){-10, y, 0};
+  er->canShoot = canShoot;
 
   *row = er;
   return 0;
@@ -132,11 +134,13 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
   int enemiesAlive = 0;
   if (data == NULL || data->rows == NULL)
     return 0;
+  data->enemyShotTimer -= dT;
   for (int i = 0; i < rowCount; i++) {
     EnemyRow *er = data->rows[i];
     int eir = 0;
     if (er->enabled) {
       updateEnemyRowState(data, er);
+      bool tryToShoot = er->canShoot && data->enemyShotTimer < 0;
 
       for (int j = 0; j < er->enemyCount; j++) {
         Enemy *e = &er->enemies[j];
@@ -147,6 +151,11 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
           if (checkEnemyRowWin(e->entity->pos, e->entity->scale / 2)) {
             gameState.lives = 0;
             gameState.state = GameOver;
+          } else if (tryToShoot && player.pos.x < e->entity->pos.x + 1.0f &&
+                     player.pos.x > e->entity->pos.x - 1.0f) {
+
+            enemyShoot(e->entity->pos);
+            tryToShoot = false;
           }
         } else if (e->state == Destroyed) {
           e->entity->tint.a -= (ENEMY_FADE_RATE * dT);
@@ -175,7 +184,7 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
   }
   for (int i = 0; i < enemyData->rowCount; i++) {
     EnemyRow *enemyRow = enemyData->rows[i];
-    CreateEnemyRow(y -= yGap, enemyCount, model, &enemyRow);
+    CreateEnemyRow(y -= yGap, enemyCount, i == 0, model, &enemyRow);
     enemyData->rows[i] = enemyRow;
   }
   enemyData->timeToBoss = BOSS_COUNTDOWN;
@@ -204,5 +213,6 @@ void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel,
   float xGap = gameWindow.camera.position.z / 2 - 17.5;
   enemyData->xTargetRight = xGap;
   enemyData->yAdvance = -1.0;
+  enemyData->enemyShotTimer = ENEMY_SHOT_COOLDOWN;
   setupEnemies(enemyData, enemiesPerRow, enemyModel, bossModel);
 }

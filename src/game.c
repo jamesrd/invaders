@@ -9,10 +9,11 @@
 
 void resetGame();
 #define MAX_PLAYER_SHOTS 4
+#define MAX_ENEMY_SHOTS 4
 #define ENEMY_ROWS 5
 #define ENEMIES_PER_ROW 11
 #define PLAYER_COOLDOWN 0.5f
-#define SCORE_STRING "SCORE - %d <> HIGH SCORE - %d"
+#define SCORE_STRING "LIVES: %d <> SCORE: %d <> HIGH SCORE: %d"
 
 bool run = true;
 
@@ -22,8 +23,9 @@ EnemyData enemyData;
 BarrierData barrierData;
 
 Shot playerShots[MAX_PLAYER_SHOTS];
+Shot enemyShots[MAX_ENEMY_SHOTS];
 float playerShotTimer = 0.0f;
-Vector3 playerPosition = {0.0f, -6.0f, 0.0f};
+Entity player = {0};
 Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
 Vector2 groundSize = {40.0f, 10.0f};
 
@@ -70,13 +72,18 @@ void drawBarriers() {
   }
 }
 
-void drawPlayer() { DrawModel(playerModel, playerPosition, 1.0f, WHITE); }
+void drawPlayer() { DrawModel(*player.model, player.pos, 1.0f, WHITE); }
 
 void drawShots() {
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     if (playerShots[i].enabled) {
       DrawSphere(playerShots[i].pos, playerShots[i].radius,
                  playerShots[i].color);
+    }
+  }
+  for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
+    if (enemyShots[i].enabled) {
+      DrawSphere(enemyShots[i].pos, enemyShots[i].radius, enemyShots[i].color);
     }
   }
 }
@@ -101,7 +108,8 @@ void drawUI() {
   case Paused:
     DrawTextCentered("PAUSED", gameWindow.xCenter, gameWindow.yCenter,
                      gameWindow.fontLargeSize, WHITE);
-    snprintf(score, 99, SCORE_STRING, gameState.score, gameState.highScore);
+    snprintf(score, 99, SCORE_STRING, gameState.lives, gameState.score,
+             gameState.highScore);
     DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
                      gameWindow.fontSmallSize, WHITE);
     break;
@@ -112,11 +120,13 @@ void drawUI() {
     else
       DrawTextCentered("YOU LOSE!", gameWindow.xCenter, gameWindow.yCenter,
                        gameWindow.fontLargeSize, WHITE);
-    snprintf(score, 99, SCORE_STRING, gameState.score, gameState.highScore);
+    snprintf(score, 99, SCORE_STRING, gameState.lives, gameState.score,
+             gameState.highScore);
     DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
                      gameWindow.fontSmallSize, WHITE);
   default:
-    snprintf(score, 99, SCORE_STRING, gameState.score, gameState.highScore);
+    snprintf(score, 99, SCORE_STRING, gameState.lives, gameState.score,
+             gameState.highScore);
     DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
                      gameWindow.fontSmallSize, WHITE);
   }
@@ -137,14 +147,29 @@ void playerShoot() {
         continue;
 
       playerShots[i].enabled = true;
-      playerShots[i].pos = (Vector3){playerPosition.x, playerPosition.y + 1.0f,
-                                     playerPosition.z};
+      playerShots[i].pos =
+          (Vector3){player.pos.x, player.pos.y + 1.0f, player.pos.z};
       playerShots[i].vel = (Vector3){0, 10.0f, 0};
       playerShots[i].radius = 0.1f;
       playerShots[i].color = RED;
       playerShotTimer = PLAYER_COOLDOWN;
       break;
     }
+  }
+}
+
+void enemyShoot(Vector3 pos) {
+  for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
+    if (enemyShots[i].enabled)
+      continue;
+
+    enemyShots[i].enabled = true;
+    enemyShots[i].pos = (Vector3){pos.x, pos.y - 1.0f, 0};
+    enemyShots[i].vel = (Vector3){0, -10.0f, 0};
+    enemyShots[i].radius = 0.1f;
+    enemyShots[i].color = RED;
+    enemyData.enemyShotTimer = ENEMY_SHOT_COOLDOWN;
+    break;
   }
 }
 
@@ -174,10 +199,10 @@ bool handleInput() {
       gameState.state = Paused;
     }
     if (IsKeyDown(KEY_LEFT)) {
-      playerPosition.x -= 0.1; // TODO - need dT
+      player.pos.x -= 0.1; // TODO - need dT
     }
     if (IsKeyDown(KEY_RIGHT)) {
-      playerPosition.x += 0.1;
+      player.pos.x += 0.1;
     }
     if (IsKeyDown(KEY_SPACE)) {
       playerShoot();
@@ -199,11 +224,23 @@ bool handleInput() {
   return true;
 }
 
-void playerCollisionDetection(float dT) {}
-
 bool checkShotCollision(Shot s, Entity *e) {
   bool hit = CheckCollisionSpheres(e->pos, e->scale / 2, s.pos, s.radius);
   return hit;
+}
+
+void playerCollisionDetection(float dT) {
+  for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
+    if (enemyShots[i].enabled) {
+      if (checkShotCollision(enemyShots[i], &player)) {
+        enemyShots[i].enabled = false;
+        gameState.lives--;
+        if (gameState.lives == 0) {
+          gameState.state = GameOver;
+        }
+      }
+    }
+  }
 }
 
 bool checkShotsToEnemy(Enemy *e) {
@@ -240,7 +277,7 @@ bool checkShotHitsBarrier(Shot *s) {
 }
 
 bool checkEnemyRowWin(Vector3 v, float radius) {
-  return v.y - radius < playerPosition.y + 0.5;
+  return v.y - radius < player.pos.y + 0.5;
 }
 
 void movePlayerShots(float dT) {
@@ -261,7 +298,22 @@ void movePlayerShots(float dT) {
   }
 }
 
-void moveEnemyShots(float dT) {}
+void moveEnemyShots(float dT) {
+  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+    Shot p = enemyShots[i];
+    if (p.enabled) {
+      p.pos.x += p.vel.x * dT;
+      p.pos.y += p.vel.y * dT;
+      p.pos.z += p.vel.z * dT;
+
+      // TODO - find correct end states for a shot:
+      p.enabled = p.pos.y > groundPosition.y && !checkShotHitsBarrier(&p);
+      // Enemy collision happens when enemies are updated
+
+      enemyShots[i] = p;
+    }
+  }
+}
 
 void updateState(float dT) {
   if (playerShotTimer > 0) {
@@ -337,17 +389,24 @@ void resetGame() {
     gameState.highScore = gameState.score;
   }
   gameState.score = 0;
-  gameState.lives = 1;
-  playerPosition.x = 0;
-  playerPosition.z = 0;
-  playerPosition.y = gameWindow.camera.position.z * -0.30;
-  groundPosition.y = playerPosition.y - 1;
+  gameState.lives = 3;
+  player.enabled = true;
+  player.scale = 1.0;
+  player.tint = WHITE;
+  player.model = &playerModel;
+  player.pos.x = 0;
+  player.pos.z = 0;
+  player.pos.y = gameWindow.camera.position.z * -0.30;
+  groundPosition.y = player.pos.y - 1;
   groundSize.x = gameWindow.camera.position.z * 1.5;
   groundSize.y = gameWindow.camera.position.z / 5;
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel, &bossModel);
-  InitBarriers(&barrierData, 4, 4, playerPosition.y + 2, &barrierModel);
+  InitBarriers(&barrierData, 4, 4, player.pos.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     playerShots[i].enabled = false;
+  }
+  for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
+    enemyShots[i].enabled = false;
   }
 }
 

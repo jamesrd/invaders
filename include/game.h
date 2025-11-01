@@ -28,8 +28,10 @@ int InitGame(char *title, int width, int height);
 int RunGame();
 bool checkShotsToEnemy(Enemy *e);
 bool checkEnemyRowWin(Vector3 v, float radius);
+void enemyShoot(Vector3 pos);
 
 extern GameState gameState;
 extern WindowInfo gameWindow;
+extern Entity player;
 
 #endif

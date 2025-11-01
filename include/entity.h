@@ -2,6 +2,8 @@
 #define INVADER_ENTITY
 #include "raylib.h"
 
+enum EntityState { Active, Destroyed, Disabled };
+
 typedef struct entity_t {
   bool enabled;
   Model *model;

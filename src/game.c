@@ -13,6 +13,8 @@ void resetGame();
 #define ENEMY_ROWS 5
 #define ENEMIES_PER_ROW 11
 #define PLAYER_COOLDOWN 0.5f
+#define PLAYER_X_VEL 10.0
+#define PLAYER_FADE_RATE 500.0f
 #define SCORE_STRING "LIVES: %d <> SCORE: %d <> HIGH SCORE: %d"
 
 bool run = true;
@@ -26,6 +28,8 @@ Shot playerShots[MAX_PLAYER_SHOTS];
 Shot enemyShots[MAX_ENEMY_SHOTS];
 float playerShotTimer = 0.0f;
 Entity player = {0};
+enum EntityState playerState = Active;
+Vector3 playerVel = {0};
 Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
 Vector2 groundSize = {40.0f, 10.0f};
 
@@ -72,7 +76,7 @@ void drawBarriers() {
   }
 }
 
-void drawPlayer() { DrawModel(*player.model, player.pos, 1.0f, WHITE); }
+void drawPlayer() { drawEntity(&player); }
 
 void drawShots() {
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
@@ -195,14 +199,15 @@ bool handleInput() {
   }
 
   if (gameState.state == Playing) {
+    playerVel.x = 0.0;
     if (IsKeyReleased(KEY_TAB)) {
       gameState.state = Paused;
     }
     if (IsKeyDown(KEY_LEFT)) {
-      player.pos.x -= 0.1; // TODO - need dT
+      playerVel.x = -PLAYER_X_VEL;
     }
     if (IsKeyDown(KEY_RIGHT)) {
-      player.pos.x += 0.1;
+      playerVel.x = PLAYER_X_VEL;
     }
     if (IsKeyDown(KEY_SPACE)) {
       playerShoot();
@@ -230,9 +235,12 @@ bool checkShotCollision(Shot s, Entity *e) {
 }
 
 void playerCollisionDetection(float dT) {
+  if (playerState == Destroyed)
+    return;
   for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
     if (enemyShots[i].enabled) {
       if (checkShotCollision(enemyShots[i], &player)) {
+        playerState = Destroyed;
         enemyShots[i].enabled = false;
         gameState.lives--;
         if (gameState.lives == 0) {
@@ -306,9 +314,7 @@ void moveEnemyShots(float dT) {
       p.pos.y += p.vel.y * dT;
       p.pos.z += p.vel.z * dT;
 
-      // TODO - find correct end states for a shot:
       p.enabled = p.pos.y > groundPosition.y && !checkShotHitsBarrier(&p);
-      // Enemy collision happens when enemies are updated
 
       enemyShots[i] = p;
     }
@@ -316,12 +322,22 @@ void moveEnemyShots(float dT) {
 }
 
 void updateState(float dT) {
-  if (playerShotTimer > 0) {
-    playerShotTimer -= dT;
-  }
-  // move enemy shots & player collision detection
   moveEnemyShots(dT);
-  playerCollisionDetection(dT);
+  if (playerState == Active) {
+    player.pos.x += playerVel.x * dT;
+    player.pos.y += playerVel.y * dT;
+    player.pos.z += playerVel.z * dT;
+    if (playerShotTimer > 0) {
+      playerShotTimer -= dT;
+    }
+    playerCollisionDetection(dT);
+  } else if (playerState == Destroyed) {
+    player.tint.a -= PLAYER_FADE_RATE * dT;
+    if (player.tint.a <= 0.0) {
+      player.tint.a = 255;
+      playerState = Active;
+    }
+  }
   // move player shots
   movePlayerShots(dT);
   // update enemy state & enemy collision detection
@@ -390,6 +406,7 @@ void resetGame() {
   }
   gameState.score = 0;
   gameState.lives = 3;
+  playerState = Active;
   player.enabled = true;
   player.scale = 1.0;
   player.tint = WHITE;

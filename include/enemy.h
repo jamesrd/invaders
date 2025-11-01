@@ -7,17 +7,16 @@
 #define ENEMY_MOVE_RIGHT (Vector3){1.0, 0, 0}
 #define ENEMY_MOVE_DOWN (Vector3){0, -1.0, 0}
 #define ENEMY_MOVE_ARRIVE (Vector3){0, 0, 30}
-#define ENEMY_SHOT_COOLDOWN 2.0f
+#define ENEMY_SHOT_COOLDOWN 1.0f
 #define ENEMY_START_Z -15
 #define ENEMY_FADE_RATE 500.0f
 #define BOSS_COUNTDOWN 10.0f
 #define BOSS_SPEED 2.0
 
 enum EnemyRowMode { Arriving, Advancing, LeftMarch, RightMarch, Stationary };
-enum EnemyState { Active, Destroyed, Disabled };
 
 typedef struct enemy_t {
-  enum EnemyState state;
+  enum EntityState state;
   Entity *entity;
   int scoreValue;
 } Enemy;

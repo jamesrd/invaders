@@ -7,7 +7,7 @@ OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 FRAMEWORKS = -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL 
 LIBS = $(LIBDIR)/libraylib.a
 
-run: clean default
+run: default
 	./$(TARGET)
 
 default: $(TARGET)

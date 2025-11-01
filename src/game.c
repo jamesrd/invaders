@@ -33,7 +33,7 @@ Entity player = {0};
 enum EntityState playerState = Active;
 Vector3 playerVel = {0};
 Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
-Vector2 groundSize = {40.0f, 10.0f};
+Vector2 groundSize = {40.0f, 20.0f};
 
 Model playerModel;
 Model enemyModel;
@@ -97,8 +97,8 @@ void drawShots() {
 void draw3dContent() {
   BeginMode3D(gameWindow.camera);
   drawBackground();
-  drawBarriers();
   drawEnemies();
+  drawBarriers();
   drawPlayer();
   drawShots();
   EndMode3D();
@@ -142,7 +142,7 @@ void drawUI() {
 
 void drawFrame() {
   BeginDrawing();
-  ClearBackground((Color){30, 30, 30, 255});
+  ClearBackground((Color){50, 50, 50, 255});
   draw3dContent();
   drawUI();
   EndDrawing();
@@ -423,7 +423,7 @@ void resetGame() {
   player.pos.y = gameWindow.camera.position.z * -0.30;
   groundPosition.y = player.pos.y - 1;
   groundSize.x = gameWindow.camera.position.z * 1.5;
-  groundSize.y = gameWindow.camera.position.z / 5;
+  groundSize.y = gameWindow.camera.position.z / 1;
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel, &bossModel);
   InitBarriers(&barrierData, 4, 4, player.pos.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {

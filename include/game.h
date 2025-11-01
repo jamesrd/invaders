@@ -1,8 +1,12 @@
 #ifndef INVADERS_GAME
 #define INVADERS_GAME
+#include "barrier.h"
 #include "enemy.h"
 #include "entity.h"
 #include "raylib.h"
+
+#define MAX_PLAYER_SHOTS 4
+#define MAX_ENEMY_SHOTS 4
 
 enum GameStates { Welcome, Paused, Playing, GameOver };
 
@@ -33,5 +37,12 @@ void enemyShoot(Vector3 pos);
 extern GameState gameState;
 extern WindowInfo gameWindow;
 extern Entity player;
+extern BarrierData barrierData;
+extern EnemyData enemyData;
+extern Shot playerShots[];
+extern Shot enemyShots[];
+extern Vector3 groundPosition;
+extern Vector2 groundSize;
+extern bool showFps;
 
 #endif

@@ -10,7 +10,7 @@
 #define ENEMY_SHOT_COOLDOWN 1.0f
 #define ENEMY_START_Z -15
 #define ENEMY_FADE_RATE 500.0f
-#define BOSS_COUNTDOWN 10.0f
+#define BOSS_COUNTDOWN 0.0f
 #define BOSS_SPEED 2.0
 
 enum EnemyRowMode { Arriving, Advancing, LeftMarch, RightMarch, Stationary };

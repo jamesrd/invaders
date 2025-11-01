@@ -4,6 +4,8 @@
 #include "enemy.h"
 #include "entity.h"
 #include "raylib.h"
+#include "utility.h"
+#include <stdio.h>
 
 void resetGame();
 #define ENEMY_ROWS 5
@@ -34,6 +36,8 @@ Model playerModel;
 Model enemyModel;
 Model barrierModel;
 Model bossModel;
+
+AnimData bossAnimation = {0};
 
 void updateScreenHelpers() {
   gameWindow.xCenter = gameWindow.width / 2;
@@ -248,12 +252,24 @@ void updateState(float dT) {
   }
 }
 
+void updateAnimations(float dT) {
+  bossAnimation.frameRate += dT;
+  if (bossAnimation.frameRate > 0.1) {
+    ModelAnimation anim = *bossAnimation.frames;
+    bossAnimation.frame =
+        (bossAnimation.frame + 1) % bossAnimation.frames->frameCount;
+    UpdateModelAnimation(bossModel, *bossAnimation.frames, bossAnimation.frame);
+    bossAnimation.frameRate = 0;
+  }
+}
+
 bool gameLoop(float dT) {
   if (!handleInput())
     return false;
 
   if (gameState.state == Playing) {
     updateState(dT);
+    updateAnimations(dT);
   }
 
   drawFrame();
@@ -267,10 +283,19 @@ void loadModels() {
   barrierModel = LoadModel("resources/models/barrier.glb");
 }
 
+void loadAnimations() {
+  printf("Made it one\n");
+  ModelAnimation *anims = LoadModelAnimations("resources/models/boss.glb",
+                                              &bossAnimation.frameCount);
+  bossAnimation.frames = &anims[1];
+  bossAnimation.frame = 0;
+}
+
 void unloadModels() {
   UnloadModel(playerModel);
   UnloadModel(enemyModel);
   UnloadModel(barrierModel);
+  UnloadModel(bossModel);
 }
 
 Camera3D initCamera3d() {
@@ -333,6 +358,7 @@ int InitGame(char *title, int width, int height) {
   enemyData.rowCount = ENEMY_ROWS;
   setupScreen(title, width, height, false);
   loadModels();
+  loadAnimations();
   resetGame();
   return 0;
 }

@@ -253,14 +253,13 @@ void updateState(float dT) {
 }
 
 void updateAnimations(float dT) {
-  bossAnimation.frameRate += dT;
-  if (bossAnimation.frameRate > 0.1) {
-    ModelAnimation anim = *bossAnimation.frames;
-    bossAnimation.frame =
-        (bossAnimation.frame + 1) % bossAnimation.frames->frameCount;
-    UpdateModelAnimation(bossModel, *bossAnimation.frames, bossAnimation.frame);
-    bossAnimation.frameRate = 0;
-  }
+  if (bossAnimation.frames == NULL)
+    return;
+  ModelAnimation anim = *bossAnimation.frames;
+  bossAnimation.frame =
+      (bossAnimation.frame + 1) % bossAnimation.frames->frameCount;
+  UpdateModelAnimation(bossModel, *bossAnimation.frames, bossAnimation.frame);
+  bossAnimation.frameRate = 0;
 }
 
 bool gameLoop(float dT) {
@@ -284,10 +283,13 @@ void loadModels() {
 }
 
 void loadAnimations() {
-  printf("Made it one\n");
   ModelAnimation *anims = LoadModelAnimations("resources/models/boss.glb",
                                               &bossAnimation.frameCount);
-  bossAnimation.frames = &anims[1];
+  if (anims == NULL) {
+    printf("Couldn't load animation\n");
+    return;
+  }
+  bossAnimation.frames = &anims[0];
   bossAnimation.frame = 0;
 }
 

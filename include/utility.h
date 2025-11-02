@@ -3,9 +3,7 @@
 #include "raylib.h"
 
 typedef struct animData_t {
-  int frameCount;
   int frame;
-  float frameRate;
   ModelAnimation *frames;
 } AnimData;
 

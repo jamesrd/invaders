@@ -38,6 +38,7 @@ Model barrierModel;
 Model bossModel;
 
 AnimData bossAnimation = {0};
+AnimData enemyAnimation = {0};
 
 void updateScreenHelpers() {
   gameWindow.xCenter = gameWindow.width / 2;
@@ -253,13 +254,17 @@ void updateState(float dT) {
 }
 
 void updateAnimations(float dT) {
-  if (bossAnimation.frames == NULL)
-    return;
-  ModelAnimation anim = *bossAnimation.frames;
-  bossAnimation.frame =
-      (bossAnimation.frame + 1) % bossAnimation.frames->frameCount;
-  UpdateModelAnimation(bossModel, *bossAnimation.frames, bossAnimation.frame);
-  bossAnimation.frameRate = 0;
+  if (bossAnimation.frames != NULL) {
+    bossAnimation.frame =
+        (bossAnimation.frame + 1) % bossAnimation.frames->frameCount;
+    UpdateModelAnimation(bossModel, *bossAnimation.frames, bossAnimation.frame);
+  }
+  if (enemyAnimation.frames != NULL) {
+    enemyAnimation.frame =
+        (enemyAnimation.frame + 1) % enemyAnimation.frames->frameCount;
+    UpdateModelAnimation(enemyModel, *enemyAnimation.frames,
+                         enemyAnimation.frame);
+  }
 }
 
 bool gameLoop(float dT) {
@@ -278,19 +283,28 @@ bool gameLoop(float dT) {
 void loadModels() {
   playerModel = LoadModel("resources/models/player.glb");
   enemyModel = LoadModel("resources/models/enemy.glb");
-  bossModel = LoadModel("resources/models/enemy.glb");
+  bossModel = LoadModel("resources/models/boss.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
 }
 
 void loadAnimations() {
-  ModelAnimation *anims = LoadModelAnimations("resources/models/enemy.glb",
-                                              &bossAnimation.frameCount);
-  if (anims == NULL) {
+  int animCount;
+  ModelAnimation *anims;
+  anims = LoadModelAnimations("resources/models/boss.glb", &animCount);
+  if (anims == NULL || animCount == 0) {
     printf("Couldn't load animation\n");
     return;
   }
   bossAnimation.frames = &anims[0];
   bossAnimation.frame = 0;
+  anims = NULL; // this is bad
+  anims = LoadModelAnimations("resources/models/enemy.glb", &animCount);
+  if (anims == NULL || animCount == 0) {
+    printf("Couldn't load animation\n");
+    return;
+  }
+  enemyAnimation.frames = &anims[0];
+  enemyAnimation.frame = 0;
 }
 
 void unloadModels() {

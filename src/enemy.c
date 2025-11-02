@@ -201,7 +201,7 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
   enemyData->boss->entity = malloc(sizeof(Entity));
   enemyData->boss->entity->enabled = true;
   enemyData->boss->entity->model = bossModel;
-  enemyData->boss->entity->scale = 1.0f;
+  enemyData->boss->entity->scale = 3.0f;
   enemyData->boss->entity->tint = WHITE;
   enemyData->boss->entity->pos =
       (Vector3){BOSS_BEGIN, gameWindow.camera.position.z / 3, 0};

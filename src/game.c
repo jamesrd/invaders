@@ -39,6 +39,7 @@ Model bossModel;
 
 AnimData bossAnimation = {0};
 AnimData enemyAnimation = {0};
+AnimData playerAnimation = {0};
 
 void updateScreenHelpers() {
   gameWindow.xCenter = gameWindow.width / 2;
@@ -227,9 +228,25 @@ void moveEnemyShots(float dT) {
   }
 }
 
+void updatePlayerAnimation() {
+  if (playerAnimation.frames == NULL)
+    return;
+  int frameDir = playerVel.y < 0 ? -1 : 1;
+  playerAnimation.frame += frameDir;
+  if (playerAnimation.frame < 0)
+    playerAnimation.frame = playerAnimation.frames->frameCount - 1;
+  else if (playerAnimation.frame >= playerAnimation.frames->frameCount)
+    playerAnimation.frame = 0;
+  UpdateModelAnimation(playerModel, *playerAnimation.frames,
+                       playerAnimation.frame);
+}
+
 void updateState(float dT) {
   moveEnemyShots(dT);
   if (playerState == Active) {
+    if (playerVel.y != 0.0) {
+      updatePlayerAnimation();
+    }
     player.pos.x += playerVel.x * dT;
     player.pos.y += playerVel.y * dT;
     player.pos.z += playerVel.z * dT;
@@ -304,6 +321,14 @@ void loadAnimations() {
   } else {
     enemyAnimation.frames = &anims[0];
     enemyAnimation.frame = 0;
+  }
+  anims = NULL; // this is bad
+  anims = LoadModelAnimations("resources/models/player.glb", &animCount);
+  if (anims == NULL || animCount == 0) {
+    printf("Couldn't load animation player\n");
+  } else {
+    playerAnimation.frames = &anims[0];
+    playerAnimation.frame = 0;
   }
 }
 

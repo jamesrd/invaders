@@ -1,0 +1,8 @@
+bin/
+obj/
+lib/
+web/
+
+.DS_Store
+**/*.blend1
+.clangd

@@ -292,7 +292,7 @@ void loadAnimations() {
   ModelAnimation *anims;
   anims = LoadModelAnimations("resources/models/boss.glb", &animCount);
   if (anims == NULL || animCount == 0) {
-    printf("Couldn't load animation\n");
+    printf("Couldn't load animation boss\n");
   } else {
     bossAnimation.frames = &anims[0];
     bossAnimation.frame = 0;

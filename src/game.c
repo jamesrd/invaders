@@ -231,7 +231,7 @@ void moveEnemyShots(float dT) {
 void updatePlayerAnimation() {
   if (playerAnimation.frames == NULL)
     return;
-  int frameDir = playerVel.y < 0 ? -1 : 1;
+  int frameDir = playerVel.x < 0 ? -1 : 1;
   playerAnimation.frame += frameDir;
   if (playerAnimation.frame < 0)
     playerAnimation.frame = playerAnimation.frames->frameCount - 1;
@@ -244,7 +244,7 @@ void updatePlayerAnimation() {
 void updateState(float dT) {
   moveEnemyShots(dT);
   if (playerState == Active) {
-    if (playerVel.y != 0.0) {
+    if (playerVel.x != 0.0) {
       updatePlayerAnimation();
     }
     player.pos.x += playerVel.x * dT;

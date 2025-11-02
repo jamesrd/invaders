@@ -6,8 +6,12 @@
 #include "raylib.h"
 #include "utility.h"
 #include <stdio.h>
+#if defined(PLATFORM_WEB)
+#include <emscripten/emscripten.h>
+#endif
 
 void resetGame();
+
 #define ENEMY_ROWS 5
 #define ENEMIES_PER_ROW 11
 #define PLAYER_COOLDOWN 0.5f
@@ -404,11 +408,16 @@ int InitGame(char *title, int width, int height) {
   return 0;
 }
 
+void UpdateDrawFrame() { gameLoop(GetFrameTime()); }
+
 int RunGame() {
+#if defined(PLATFORM_WEB)
+  emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
+#else
   while (!WindowShouldClose() && run) {
     run = gameLoop(GetFrameTime());
   }
-
+#endif
   unloadModels();
   CloseWindow();
   return 0;

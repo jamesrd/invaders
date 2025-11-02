@@ -32,7 +32,7 @@ ifeq ($(PLATFORM),PLATFORM_WEB)
     LDLIBS = $(RAYLIB_LIB_PATH)/libraylib.web.a
     # LDFLAGS += --shell-file $(BUILD_WEB_SHELL)
     EXT = .html
-    TARGET = invaders.html
+    TARGET = web/invaders.js
     ifeq ($(BUILD_WEB_RESOURCES),TRUE)
         LDFLAGS += --preload-file $(BUILD_WEB_RESOURCES_PATH)
     endif

@@ -278,12 +278,12 @@ bool gameLoop(float dT) {
 void loadModels() {
   playerModel = LoadModel("resources/models/player.glb");
   enemyModel = LoadModel("resources/models/enemy.glb");
-  bossModel = LoadModel("resources/models/boss.glb");
+  bossModel = LoadModel("resources/models/enemy.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
 }
 
 void loadAnimations() {
-  ModelAnimation *anims = LoadModelAnimations("resources/models/boss.glb",
+  ModelAnimation *anims = LoadModelAnimations("resources/models/enemy.glb",
                                               &bossAnimation.frameCount);
   if (anims == NULL) {
     printf("Couldn't load animation\n");

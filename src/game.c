@@ -293,18 +293,18 @@ void loadAnimations() {
   anims = LoadModelAnimations("resources/models/boss.glb", &animCount);
   if (anims == NULL || animCount == 0) {
     printf("Couldn't load animation\n");
-    return;
+  } else {
+    bossAnimation.frames = &anims[0];
+    bossAnimation.frame = 0;
   }
-  bossAnimation.frames = &anims[0];
-  bossAnimation.frame = 0;
   anims = NULL; // this is bad
   anims = LoadModelAnimations("resources/models/enemy.glb", &animCount);
   if (anims == NULL || animCount == 0) {
-    printf("Couldn't load animation\n");
-    return;
+    printf("Couldn't load animation enemy\n");
+  } else {
+    enemyAnimation.frames = &anims[0];
+    enemyAnimation.frame = 0;
   }
-  enemyAnimation.frames = &anims[0];
-  enemyAnimation.frame = 0;
 }
 
 void unloadModels() {

@@ -22,6 +22,7 @@ void resetGame();
 
 bool run = true;
 bool showFps = false;
+bool drawDebug = false;
 
 WindowInfo gameWindow = {0};
 GameState gameState = {0};
@@ -207,7 +208,6 @@ void movePlayerShots(float dT) {
       p.pos.y += p.vel.y * dT;
       p.pos.z += p.vel.z * dT;
 
-      // TODO - find correct end states for a shot:
       p.enabled = p.pos.y < gameWindow.camera.position.z / 2 &&
                   !checkShotHitsBarrier(&p);
       // Enemy collision happens when enemies are updated

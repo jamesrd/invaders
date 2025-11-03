@@ -44,5 +44,6 @@ extern Shot enemyShots[];
 extern Vector3 groundPosition;
 extern Vector2 groundSize;
 extern bool showFps;
+extern bool drawDebug;
 
 #endif

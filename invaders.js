@@ -64,7 +64,7 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmplu3ta6hg.js
+// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpt4cxa5fp.js
 
   if (!Module['expectedDataFileDownloads']) Module['expectedDataFileDownloads'] = 0;
   Module['expectedDataFileDownloads']++;
@@ -194,25 +194,25 @@ Module['FS_createPath']("/resources", "models", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/resources/.DS_Store", "start": 0, "end": 8196}, {"filename": "/resources/models/barrier.blend", "start": 8196, "end": 541428}, {"filename": "/resources/models/barrier.blend1", "start": 541428, "end": 1073233}, {"filename": "/resources/models/barrier.glb", "start": 1073233, "end": 1075941}, {"filename": "/resources/models/boss.blend", "start": 1075941, "end": 1913987}, {"filename": "/resources/models/boss.blend1", "start": 1913987, "end": 2752033}, {"filename": "/resources/models/boss.glb", "start": 2752033, "end": 2984453}, {"filename": "/resources/models/enemy.blend", "start": 2984453, "end": 3887630}, {"filename": "/resources/models/enemy.blend1", "start": 3887630, "end": 4790807}, {"filename": "/resources/models/enemy.glb", "start": 4790807, "end": 5231291}, {"filename": "/resources/models/player.blend", "start": 5231291, "end": 6225879}, {"filename": "/resources/models/player.blend1", "start": 6225879, "end": 7216099}, {"filename": "/resources/models/player.glb", "start": 7216099, "end": 7676319}], "remote_package_size": 7676319});
+    loadPackage({"files": [{"filename": "/resources/models/barrier.blend", "start": 0, "end": 533232}, {"filename": "/resources/models/barrier.glb", "start": 533232, "end": 535940}, {"filename": "/resources/models/boss.blend", "start": 535940, "end": 1361751}, {"filename": "/resources/models/boss.blend1", "start": 1361751, "end": 2187562}, {"filename": "/resources/models/boss.glb", "start": 2187562, "end": 2420054}, {"filename": "/resources/models/enemy.blend", "start": 2420054, "end": 3324799}, {"filename": "/resources/models/enemy.blend1", "start": 3324799, "end": 4229544}, {"filename": "/resources/models/enemy.glb", "start": 4229544, "end": 4670832}, {"filename": "/resources/models/player.blend", "start": 4670832, "end": 5665420}, {"filename": "/resources/models/player.glb", "start": 5665420, "end": 6125640}], "remote_package_size": 6125640});
 
   })();
 
-// end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmplu3ta6hg.js
-// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqhuplgd7.js
+// end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpt4cxa5fp.js
+// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqvnjz8sj.js
 
     // All the pre-js content up to here must remain later on, we need to run
     // it.
     if ((typeof ENVIRONMENT_IS_WASM_WORKER != 'undefined' && ENVIRONMENT_IS_WASM_WORKER) || (typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD) || (typeof ENVIRONMENT_IS_AUDIO_WORKLET != 'undefined' && ENVIRONMENT_IS_AUDIO_WORKLET)) Module['preRun'] = [];
     var necessaryPreJSTasks = Module['preRun'].slice();
-  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqhuplgd7.js
-// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmp6qem0svr.js
+  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqvnjz8sj.js
+// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpi7z3uzsj.js
 
     if (!Module['preRun']) throw 'Module.preRun should exist because file support used it; did a pre-js delete it?';
     necessaryPreJSTasks.forEach((task) => {
       if (Module['preRun'].indexOf(task) < 0) throw 'All preRun tasks that exist before user pre-js code should remain after; did you replace Module or modify Module.preRun?';
     });
-  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmp6qem0svr.js
+  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpi7z3uzsj.js
 
 
 var arguments_ = [];

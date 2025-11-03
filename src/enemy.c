@@ -8,7 +8,7 @@
 #define BOSS_END gameWindow.camera.position.z / 2 + 2
 #define BOSS_BEGIN -(gameWindow.camera.position.z / 2 + 2)
 
-int CreateEnemyRow(float y, int count, bool canShoot, Model *model,
+int CreateEnemyRow(float y, int count, bool canShoot, int score, Model *model,
                    EnemyRow **row) {
   float xStart = -(gameWindow.camera.position.z / 2);
   float xGap = (11 * 1.75) / count;
@@ -33,7 +33,7 @@ int CreateEnemyRow(float y, int count, bool canShoot, Model *model,
     e->entity->pos = (Vector3){xStart + (i * xGap), y, ENEMY_START_Z};
     e->entity->scale = 1.0f;
     e->entity->tint = WHITE;
-    e->scoreValue = 10;
+    e->scoreValue = score;
   }
 
   er->enabled = true;
@@ -176,6 +176,7 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
                   Model *bossModel) {
   float y = gameWindow.camera.position.z / 3;
   float yGap = (5 * 1.5) / enemyData->rowCount;
+  int score = 50;
   if (enemyData->rows == NULL) {
     enemyData->rows = calloc(enemyData->rowCount, sizeof(EnemyRow *));
   } else {
@@ -184,7 +185,8 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
   }
   for (int i = 0; i < enemyData->rowCount; i++) {
     EnemyRow *enemyRow = enemyData->rows[i];
-    CreateEnemyRow(y -= yGap, enemyCount, i == 0, model, &enemyRow);
+    CreateEnemyRow(y -= yGap, enemyCount, i == 0, score - (i * 10), model,
+                   &enemyRow);
     enemyData->rows[i] = enemyRow;
   }
   enemyData->timeToBoss = BOSS_COUNTDOWN;

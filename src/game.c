@@ -4,6 +4,7 @@
 #include "enemy.h"
 #include "entity.h"
 #include "raylib.h"
+#include "raymath.h"
 #include "utility.h"
 #include <stdio.h>
 #if defined(PLATFORM_WEB)
@@ -141,7 +142,13 @@ bool handleInput() {
 }
 
 bool checkShotCollision(Shot s, Entity *e) {
-  bool hit = CheckCollisionSpheres(e->pos, e->scale / 2, s.pos, s.radius);
+
+  BoundingBox bb = GetModelBoundingBox(*e->model);
+  bb.max = Vector3Scale(bb.max, e->scale);
+  bb.min = Vector3Scale(bb.min, e->scale);
+  bb.max = Vector3Add(bb.max, e->pos);
+  bb.min = Vector3Add(bb.min, e->pos);
+  bool hit = CheckCollisionBoxSphere(bb, s.pos, s.radius);
   return hit;
 }
 
@@ -178,14 +185,7 @@ bool checkShotHitsBarrier(Shot *s) {
   for (int i = 0; i < barrierData.count; i++) {
     Barrier barrier = barrierData.barriers[i];
     if (barrier.hitPoints > 0) {
-      BoundingBox b = GetModelBoundingBox(*barrier.entity->model);
-      b.max.x += barrier.entity->pos.x;
-      b.max.y += barrier.entity->pos.y;
-      b.max.z += barrier.entity->pos.z;
-      b.min.x += barrier.entity->pos.x;
-      b.min.y += barrier.entity->pos.y;
-      b.min.z += barrier.entity->pos.z;
-      if (CheckCollisionBoxSphere(b, s->pos, s->radius)) {
+      if (checkShotCollision(*s, barrier.entity)) {
         barrierData.barriers[i].hitPoints--;
         barrierData.barriers[i].entity->tint.a *= 0.5;
         return true;

@@ -1,11 +1,20 @@
 #include "game.h"
 #include "raylib.h"
+#include "raymath.h"
 #include "utility.h"
 #include <stdio.h>
 
 #define SCORE_STRING "LIVES: %d <> SCORE: %d <> HIGH SCORE: %d"
 
-void drawEntity(Entity *e) { DrawModel(*e->model, e->pos, e->scale, e->tint); }
+void drawEntity(Entity *e) {
+  DrawModel(*e->model, e->pos, e->scale, e->tint);
+  BoundingBox bb = GetModelBoundingBox(*e->model);
+  bb.max = Vector3Scale(bb.max, e->scale);
+  bb.min = Vector3Scale(bb.min, e->scale);
+  bb.max = Vector3Add(bb.max, e->pos);
+  bb.min = Vector3Add(bb.min, e->pos);
+  DrawBoundingBox(bb, RED);
+}
 
 void drawEnemies() {
   if (enemyData.rows == NULL)

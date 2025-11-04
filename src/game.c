@@ -52,6 +52,7 @@ void updateScreenHelpers() {
   gameWindow.yCenter = gameWindow.height / 2;
   gameWindow.fontSmallSize = gameWindow.height / 30;
   gameWindow.fontLargeSize = gameWindow.height / 15;
+  gameWindow.fontTitleSize = gameWindow.height / 12;
 }
 
 void playerShoot() {

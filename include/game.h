@@ -17,6 +17,7 @@ typedef struct {
   int yCenter;
   int fontSmallSize;
   int fontLargeSize;
+  int fontTitleSize;
   bool fullScreen;
   Camera3D camera;
 } WindowInfo;

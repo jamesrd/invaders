@@ -4,7 +4,9 @@
 #include "utility.h"
 #include <stdio.h>
 
-#define SCORE_STRING "LIVES: %d <> SCORE: %d <> HIGH SCORE: %d"
+#define SCORE_STRING "SCORE: %d ^(;,;)^ HIGH SCORE: %d"
+#define TEXT_FORMAT_SCORE                                                      \
+  TextFormat(SCORE_STRING, gameState.score, gameState.highScore)
 
 void drawEntity(Entity *e) {
   DrawModel(*e->model, e->pos, e->scale, e->tint);
@@ -63,6 +65,15 @@ void drawShots() {
   }
 }
 
+void drawLives() {
+  Vector3 lp =
+      (Vector3){-gameWindow.camera.position.z / 2.5, player.pos.y, 4.0f};
+  for (int i = 0; i < gameState.lives - 1; i++) {
+    DrawModel(*player.model, lp, player.scale, WHITE);
+    lp.x += player.scale * 1.5;
+  }
+}
+
 void draw3dContent() {
   BeginMode3D(gameWindow.camera);
   drawBackground();
@@ -70,43 +81,43 @@ void draw3dContent() {
   drawBarriers();
   drawPlayer();
   drawShots();
+  if (gameState.state != Welcome) {
+    drawLives();
+  }
   EndMode3D();
 }
 
+void drawWelcomeScreen() {
+  DrawTextCentered("SPACE INVADERS!", gameWindow.xCenter, gameWindow.yCenter,
+                   gameWindow.fontTitleSize, WHITE);
+  // add instructions
+}
+
 void drawUI() {
-  char score[100];
+  const char *message = NULL;
   if (showFps)
     DrawFPS(10, 10);
+
   switch (gameState.state) {
   case Welcome:
-    DrawTextCentered("SPACE INVADERS!", gameWindow.xCenter, gameWindow.yCenter,
-                     45, WHITE);
-    break;
+    drawWelcomeScreen();
+    return;
   case Paused:
-    DrawTextCentered("PAUSED", gameWindow.xCenter, gameWindow.yCenter,
-                     gameWindow.fontLargeSize, WHITE);
-    snprintf(score, 99, SCORE_STRING, gameState.lives, gameState.score,
-             gameState.highScore);
-    DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
-                     gameWindow.fontSmallSize, WHITE);
+    message = "PAUSED";
     break;
   case GameOver:
-    if (gameState.lives > 0)
-      DrawTextCentered("YOU WIN!", gameWindow.xCenter, gameWindow.yCenter,
-                       gameWindow.fontLargeSize, WHITE);
-    else
-      DrawTextCentered("YOU LOSE!", gameWindow.xCenter, gameWindow.yCenter,
-                       gameWindow.fontLargeSize, WHITE);
-    snprintf(score, 99, SCORE_STRING, gameState.lives, gameState.score,
-             gameState.highScore);
-    DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
-                     gameWindow.fontSmallSize, WHITE);
-  default:
-    snprintf(score, 99, SCORE_STRING, gameState.lives, gameState.score,
-             gameState.highScore);
-    DrawTextCentered(score, gameWindow.xCenter, gameWindow.fontSmallSize,
-                     gameWindow.fontSmallSize, WHITE);
+    message = gameState.lives > 0 ? "YOU WIN!" : "YOU LOSE!";
+    break;
+  case Playing:
+    message = NULL;
+    break;
   }
+  if (message != NULL) {
+    DrawTextCentered(message, gameWindow.xCenter, gameWindow.yCenter,
+                     gameWindow.fontLargeSize, WHITE);
+  }
+  DrawTextCentered(TEXT_FORMAT_SCORE, gameWindow.xCenter,
+                   gameWindow.fontSmallSize, gameWindow.fontSmallSize, WHITE);
 }
 
 void drawFrame() {

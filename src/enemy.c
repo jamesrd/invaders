@@ -59,6 +59,9 @@ void updateEnemyRowState(EnemyData *data, EnemyRow *er) {
   switch (er->mode) {
   case Arriving:
     if (er->enemies[0].entity->pos.z >= er->target.z) {
+      for (int i = 0; i < er->enemyCount; i++) {
+        er->enemies[i].entity->pos.z = er->target.z;
+      }
       er->prevMode = Arriving;
       er->mode = RightMarch;
       er->vel = ENEMY_MOVE_RIGHT;
@@ -146,7 +149,8 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
         Enemy *e = &er->enemies[j];
         moveEnemy(e, er->vel, dT);
         if (e->state == Active) {
-          if (checkShotsToEnemy(e))
+          bool enemyOk = checkShotsToEnemy(e);
+          if (enemyOk)
             eir++;
           if (checkEnemyRowWin(e->entity->pos, e->entity->scale / 2)) {
             gameState.lives = 0;

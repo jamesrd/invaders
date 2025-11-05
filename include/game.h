@@ -15,6 +15,8 @@ typedef struct {
   int xCenter;
   int height;
   int yCenter;
+  Vector2 worldTopLeft;
+  Vector2 worldBottomRight;
   int fontSmallSize;
   int fontLargeSize;
   int fontTitleSize;

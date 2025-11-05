@@ -53,6 +53,17 @@ void updateScreenHelpers() {
   gameWindow.fontSmallSize = gameWindow.height / 30;
   gameWindow.fontLargeSize = gameWindow.height / 15;
   gameWindow.fontTitleSize = gameWindow.height / 12;
+  Ray tl = GetScreenToWorldRay((Vector2){0, 0}, gameWindow.camera);
+  Ray br = GetScreenToWorldRay((Vector2){gameWindow.width, gameWindow.height},
+                               gameWindow.camera);
+  Vector3 g0 = (Vector3){-50.0f, 50.0f, 0.0f};
+  Vector3 g1 = (Vector3){-50.0f, -50.0f, 0.0f};
+  Vector3 g2 = (Vector3){50.0f, -50.0f, 0.0f};
+  Vector3 g3 = (Vector3){50.0f, 50.0f, 0.0f};
+  RayCollision tlc = GetRayCollisionQuad(tl, g0, g1, g2, g3);
+  gameWindow.worldTopLeft = (Vector2){tlc.point.x, tlc.point.y};
+  RayCollision brc = GetRayCollisionQuad(br, g0, g1, g2, g3);
+  gameWindow.worldBottomRight = (Vector2){brc.point.x, brc.point.y};
 }
 
 void playerShoot() {

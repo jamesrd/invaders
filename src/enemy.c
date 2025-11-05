@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BOSS_END gameWindow.camera.position.z / 2 + 2
-#define BOSS_BEGIN -(gameWindow.camera.position.z / 2 + 2)
+#define BOSS_END gameWindow.worldBottomRight.x + 2
+#define BOSS_BEGIN gameWindow.worldTopLeft.x - 2
 
 int CreateEnemyRow(float y, int count, bool canShoot, int score, Model *model,
                    EnemyRow **row) {

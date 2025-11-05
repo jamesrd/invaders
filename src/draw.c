@@ -66,8 +66,7 @@ void drawShots() {
 }
 
 void drawLives() {
-  Vector3 lp =
-      (Vector3){-gameWindow.camera.position.z / 2.5, player.pos.y, 4.0f};
+  Vector3 lp = (Vector3){gameWindow.worldTopLeft.x * 0.75, player.pos.y, 5.5f};
   for (int i = 0; i < gameState.lives - 1; i++) {
     DrawModel(*player.model, lp, player.scale, WHITE);
     lp.x += player.scale * 1.5;

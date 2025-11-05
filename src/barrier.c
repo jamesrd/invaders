@@ -4,6 +4,11 @@
 #include "raylib.h"
 #include <stdlib.h>
 
+void caculateBarriers(int count, float *xStart, float *xGap) {
+  *xStart = gameWindow.worldTopLeft.x / 1.5;
+  *xGap = (*xStart * -2) / (count - 1);
+}
+
 void InitBarriers(BarrierData *data, int count, int hitPoints, float y,
                   Model *barrierModel) {
   if (data->barriers != NULL) {
@@ -13,8 +18,8 @@ void InitBarriers(BarrierData *data, int count, int hitPoints, float y,
   }
   data->count = count;
 
-  float xStart = -(gameWindow.camera.position.z / 2.5);
-  float xGap = (xStart * -2) / (count - 1);
+  float xStart, xGap;
+  caculateBarriers(count, &xStart, &xGap);
 
   for (int i = 0; i < data->count; i++) {
     Barrier *b = &data->barriers[i];

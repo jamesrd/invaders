@@ -54,16 +54,16 @@ void updateScreenHelpers() {
   gameWindow.fontLargeSize = gameWindow.height / 15;
   gameWindow.fontTitleSize = gameWindow.height / 12;
   Ray tl = GetScreenToWorldRay((Vector2){0, 0}, gameWindow.camera);
-  Ray br = GetScreenToWorldRay((Vector2){gameWindow.width, gameWindow.height},
-                               gameWindow.camera);
-  Vector3 g0 = (Vector3){-50.0f, 50.0f, 0.0f};
-  Vector3 g1 = (Vector3){-50.0f, -50.0f, 0.0f};
-  Vector3 g2 = (Vector3){50.0f, -50.0f, 0.0f};
-  Vector3 g3 = (Vector3){50.0f, 50.0f, 0.0f};
+  Vector3 g0 = (Vector3){-100.0f, 100.0f, 0.0f};
+  Vector3 g1 = (Vector3){-100.0f, -100.0f, 0.0f};
+  Vector3 g2 = (Vector3){100.0f, -100.0f, 0.0f};
+  Vector3 g3 = (Vector3){100.0f, 100.0f, 0.0f};
   RayCollision tlc = GetRayCollisionQuad(tl, g0, g1, g2, g3);
   gameWindow.worldTopLeft = (Vector2){tlc.point.x, tlc.point.y};
-  RayCollision brc = GetRayCollisionQuad(br, g0, g1, g2, g3);
-  gameWindow.worldBottomRight = (Vector2){brc.point.x, brc.point.y};
+  gameWindow.worldBottomRight = (Vector2){-tlc.point.x, -tlc.point.y};
+  printf("top: %f bottom: %f left: %f right: %f\n", gameWindow.worldTopLeft.x,
+         gameWindow.worldBottomRight.x, gameWindow.worldTopLeft.y,
+         gameWindow.worldBottomRight.y);
 }
 
 void playerShoot() {
@@ -220,8 +220,8 @@ void movePlayerShots(float dT) {
       p.pos.y += p.vel.y * dT;
       p.pos.z += p.vel.z * dT;
 
-      p.enabled = p.pos.y < gameWindow.camera.position.z / 2 &&
-                  !checkShotHitsBarrier(&p);
+      p.enabled =
+          p.pos.y < gameWindow.worldTopLeft.y && !checkShotHitsBarrier(&p);
       // Enemy collision happens when enemies are updated
 
       playerShots[i] = p;
@@ -389,6 +389,9 @@ void resetGame() {
   }
   gameState.score = 0;
   gameState.lives = 3;
+  groundPosition.y = gameWindow.worldBottomRight.y * 0.75;
+  groundSize.x = gameWindow.worldTopLeft.x * 8;
+  groundSize.y = groundSize.x;
   playerState = Active;
   player.enabled = true;
   player.scale = 1.0;
@@ -396,10 +399,7 @@ void resetGame() {
   player.model = &playerModel;
   player.pos.x = 0;
   player.pos.z = 0;
-  player.pos.y = gameWindow.camera.position.z * -0.30;
-  groundPosition.y = player.pos.y - 1;
-  groundSize.x = gameWindow.camera.position.z * 1.5;
-  groundSize.y = gameWindow.camera.position.z / 1;
+  player.pos.y = groundPosition.y + 1; // TODO calculate based on model
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel, &bossModel);
   InitBarriers(&barrierData, 4, 4, player.pos.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {

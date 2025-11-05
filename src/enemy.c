@@ -5,13 +5,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// TODO make sure to recompute when fullscreen engaged
 #define BOSS_END gameWindow.worldBottomRight.x + 2
 #define BOSS_BEGIN gameWindow.worldTopLeft.x - 2
+// 11 * 1.75 is the expected width of the enemy group
+// TODO make it based on the model size + gap
+#define ENEMY_ROW_WIDTH 11 * 1.75
+//  5 * 1.5 is the height that the enemy grid covers
+//  TODO may need to calculate based on model
+#define ENEMY_ROW_GAP 5 * 1.5
 
 int CreateEnemyRow(float y, int count, bool canShoot, int score, Model *model,
                    EnemyRow **row) {
-  float xStart = -(gameWindow.camera.position.z / 2);
-  float xGap = (11 * 1.75) / count;
+  float xStart = gameWindow.worldTopLeft.x * 0.9;
+  float xGap = (ENEMY_ROW_WIDTH) / count;
   Enemy *ea = calloc(count, sizeof(Enemy));
   if (ea == NULL) {
     perror("Enemy allocation problem");
@@ -178,8 +185,8 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
 
 void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
                   Model *bossModel) {
-  float y = gameWindow.camera.position.z / 3;
-  float yGap = (5 * 1.5) / enemyData->rowCount;
+  float y = gameWindow.worldTopLeft.y * 0.7;
+  float yGap = (ENEMY_ROW_GAP) / enemyData->rowCount;
   int score = 50;
   if (enemyData->rows == NULL) {
     enemyData->rows = calloc(enemyData->rowCount, sizeof(EnemyRow *));
@@ -210,13 +217,13 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
   enemyData->boss->entity->scale = 0.5f;
   enemyData->boss->entity->tint = WHITE;
   enemyData->boss->entity->pos =
-      (Vector3){BOSS_BEGIN, gameWindow.camera.position.z / 3, 0};
+      (Vector3){BOSS_BEGIN, gameWindow.worldTopLeft.y * 0.75, 0};
 }
 
 void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel,
                  Model *bossModel) {
-  enemyData->xTargetLeft = -(gameWindow.camera.position.z / 2);
-  float xGap = gameWindow.camera.position.z / 2 - 17.5;
+  enemyData->xTargetLeft = gameWindow.worldTopLeft.x * 0.9;
+  float xGap = gameWindow.worldBottomRight.x - ENEMY_ROW_WIDTH;
   enemyData->xTargetRight = xGap;
   enemyData->yAdvance = -1.0;
   enemyData->enemyShotTimer = ENEMY_SHOT_COOLDOWN;

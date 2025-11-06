@@ -61,9 +61,6 @@ void updateScreenHelpers() {
   RayCollision tlc = GetRayCollisionQuad(tl, g0, g1, g2, g3);
   gameWindow.worldTopLeft = (Vector2){tlc.point.x, tlc.point.y};
   gameWindow.worldBottomRight = (Vector2){-tlc.point.x, -tlc.point.y};
-  printf("top: %f bottom: %f left: %f right: %f\n", gameWindow.worldTopLeft.x,
-         gameWindow.worldBottomRight.x, gameWindow.worldTopLeft.y,
-         gameWindow.worldBottomRight.y);
 }
 
 void playerShoot() {
@@ -401,7 +398,7 @@ void resetGame() {
   player.pos.z = 0;
   player.pos.y = groundPosition.y + 1; // TODO calculate based on model
   InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel, &bossModel);
-  InitBarriers(&barrierData, 4, 4, player.pos.y + 2, &barrierModel);
+  InitBarriers(&barrierData, 4, 3, player.pos.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     playerShots[i].enabled = false;
   }

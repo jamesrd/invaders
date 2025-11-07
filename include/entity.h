@@ -16,6 +16,8 @@ typedef struct shot_t {
   bool enabled;
   Vector3 pos;
   Vector3 vel;
+  Model *model;
+  float scale;
   float radius;
   Color color;
 } Shot;

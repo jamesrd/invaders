@@ -54,13 +54,17 @@ void drawPlayer() { drawEntity(&player); }
 void drawShots() {
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     if (playerShots[i].enabled) {
-      DrawSphere(playerShots[i].pos, playerShots[i].radius,
-                 playerShots[i].color);
+      DrawModel(*playerShots[i].model, playerShots[i].pos, playerShots[i].scale,
+                playerShots[i].color);
     }
   }
   for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
     if (enemyShots[i].enabled) {
-      DrawSphere(enemyShots[i].pos, enemyShots[i].radius, enemyShots[i].color);
+      DrawModelEx(*enemyShots[i].model, enemyShots[i].pos, (Vector3){1, 0, 0},
+                  180,
+                  (Vector3){enemyShots[i].scale, enemyShots[i].scale,
+                            enemyShots[i].scale},
+                  enemyShots[i].color);
     }
   }
 }

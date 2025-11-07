@@ -42,6 +42,7 @@ Model playerModel;
 Model enemyModel;
 Model barrierModel;
 Model bossModel;
+Model spearModel;
 
 AnimData bossAnimation = {0};
 AnimData enemyAnimation = {0};
@@ -74,7 +75,8 @@ void playerShoot() {
           (Vector3){player.pos.x, player.pos.y + 1.0f, player.pos.z};
       playerShots[i].vel = (Vector3){0, 10.0f, 0};
       playerShots[i].radius = 0.1f;
-      playerShots[i].color = RED;
+      playerShots[i].scale = 1.0f;
+      playerShots[i].color = WHITE;
       playerShotTimer = PLAYER_COOLDOWN;
       break;
     }
@@ -90,7 +92,8 @@ void enemyShoot(Vector3 pos) {
     enemyShots[i].pos = (Vector3){pos.x, pos.y - 1.0f, 0};
     enemyShots[i].vel = (Vector3){0, -10.0f, 0};
     enemyShots[i].radius = 0.1f;
-    enemyShots[i].color = RED;
+    enemyShots[i].scale = 1.0f;
+    enemyShots[i].color = WHITE;
     enemyData.enemyShotTimer = ENEMY_SHOT_COOLDOWN;
     break;
   }
@@ -315,6 +318,7 @@ void loadModels() {
   enemyModel = LoadModel("resources/models/enemy.glb");
   bossModel = LoadModel("resources/models/boss.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
+  spearModel = LoadModel("resources/models/spear.glb");
 }
 
 void loadAnimations() {
@@ -350,6 +354,7 @@ void unloadModels() {
   UnloadModel(enemyModel);
   UnloadModel(barrierModel);
   UnloadModel(bossModel);
+  UnloadModel(spearModel);
 }
 
 Camera3D initCamera3d() {
@@ -401,9 +406,11 @@ void resetGame() {
   InitBarriers(&barrierData, 4, 3, player.pos.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     playerShots[i].enabled = false;
+    playerShots[i].model = &spearModel;
   }
   for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
     enemyShots[i].enabled = false;
+    enemyShots[i].model = &spearModel;
   }
 }
 

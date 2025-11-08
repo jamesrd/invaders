@@ -44,6 +44,7 @@ Model enemyModel2;
 Model barrierModel;
 Model bossModel;
 Model spearModel;
+Model backgroundModel;
 
 AnimData bossAnimation = {0};
 AnimData enemyAnimation1 = {0};
@@ -328,6 +329,7 @@ void loadModels() {
   bossModel = LoadModel("resources/models/ship.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
   spearModel = LoadModel("resources/models/spear.glb");
+  backgroundModel = LoadModel("resources/models/background.glb");
 }
 
 void loadAnimations() {
@@ -373,6 +375,7 @@ void unloadModels() {
   UnloadModel(barrierModel);
   UnloadModel(bossModel);
   UnloadModel(spearModel);
+  UnloadModel(backgroundModel);
 }
 
 Camera3D initCamera3d() {

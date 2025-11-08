@@ -38,7 +38,11 @@ void drawEnemies() {
   }
 }
 
-void drawBackground() { DrawPlane(groundPosition, groundSize, DARKGREEN); }
+void drawBackground() {
+  // DrawPlane(groundPosition, groundSize, DARKGREEN);
+  DrawModelEx(backgroundModel, (Vector3){0.0, 0.0, -1.5f}, (Vector3){1.0, 0, 0},
+              90, (Vector3){11.0f, 1, 11.0f}, WHITE);
+}
 
 void drawBarriers() {
   for (int i = 0; i < barrierData.count; i++) {

@@ -183,8 +183,8 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
   return enemiesAlive;
 }
 
-void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
-                  Model *bossModel) {
+void setupEnemies(EnemyData *enemyData, int enemyCount, Model *shooterModel,
+                  Model *infantryModel, Model *bossModel) {
   float y = gameWindow.worldTopLeft.y * 0.7;
   float yGap = (ENEMY_ROW_GAP) / enemyData->rowCount;
   int score = 50;
@@ -194,11 +194,13 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
     enemyData->rows =
         realloc(enemyData->rows, sizeof(EnemyRow *) * enemyData->rowCount);
   }
+  Model *rowModel = shooterModel;
   for (int i = 0; i < enemyData->rowCount; i++) {
     EnemyRow *enemyRow = enemyData->rows[i];
-    CreateEnemyRow(y -= yGap, enemyCount, i == 0, score - (i * 10), model,
+    CreateEnemyRow(y -= yGap, enemyCount, i == 0, score - (i * 10), rowModel,
                    &enemyRow);
     enemyData->rows[i] = enemyRow;
+    rowModel = infantryModel;
   }
   enemyData->timeToBoss = BOSS_COUNTDOWN;
   if (enemyData->boss != NULL) {
@@ -220,12 +222,13 @@ void setupEnemies(EnemyData *enemyData, int enemyCount, Model *model,
       (Vector3){BOSS_BEGIN, gameWindow.worldTopLeft.y * 0.75, 0};
 }
 
-void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel,
-                 Model *bossModel) {
+void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *shooterModel,
+                 Model *infantryModel, Model *bossModel) {
   enemyData->xTargetLeft = gameWindow.worldTopLeft.x * 0.9;
   float xGap = gameWindow.worldBottomRight.x - ENEMY_ROW_WIDTH;
   enemyData->xTargetRight = xGap;
   enemyData->yAdvance = -1.0;
   enemyData->enemyShotTimer = ENEMY_SHOT_COOLDOWN;
-  setupEnemies(enemyData, enemiesPerRow, enemyModel, bossModel);
+  setupEnemies(enemyData, enemiesPerRow, shooterModel, infantryModel,
+               bossModel);
 }

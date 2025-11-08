@@ -44,8 +44,8 @@ typedef struct enemyData_t {
   float enemyShotTimer;
 } EnemyData;
 
-void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *enemyModel,
-                 Model *bossModel);
+void InitEnemies(EnemyData *enemyData, int enemiesPerRow, Model *shooterModel,
+                 Model *infantryModel, Model *bossModel);
 int CreateEnemyRow(float y, int count, bool canShoot, int score, Model *model,
                    EnemyRow **row);
 int UpdateEnemyState(EnemyData *ed, int rowCount, float dT);

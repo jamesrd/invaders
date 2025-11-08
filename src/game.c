@@ -39,13 +39,15 @@ Vector3 groundPosition = {0.0f, -7.0f, 0.0f};
 Vector2 groundSize = {40.0f, 20.0f};
 
 Model playerModel;
-Model enemyModel;
+Model enemyModel1;
+Model enemyModel2;
 Model barrierModel;
 Model bossModel;
 Model spearModel;
 
 AnimData bossAnimation = {0};
-AnimData enemyAnimation = {0};
+AnimData enemyAnimation1 = {0};
+AnimData enemyAnimation2 = {0};
 AnimData playerAnimation = {0};
 
 void updateScreenHelpers() {
@@ -292,11 +294,17 @@ void updateAnimations(float dT) {
         (bossAnimation.frame + 1) % bossAnimation.frames->frameCount;
     UpdateModelAnimation(bossModel, *bossAnimation.frames, bossAnimation.frame);
   }
-  if (enemyAnimation.frames != NULL) {
-    enemyAnimation.frame =
-        (enemyAnimation.frame + 1) % enemyAnimation.frames->frameCount;
-    UpdateModelAnimation(enemyModel, *enemyAnimation.frames,
-                         enemyAnimation.frame);
+  if (enemyAnimation1.frames != NULL) {
+    enemyAnimation1.frame =
+        (enemyAnimation1.frame + 1) % enemyAnimation1.frames->frameCount;
+    UpdateModelAnimation(enemyModel1, *enemyAnimation1.frames,
+                         enemyAnimation1.frame);
+  }
+  if (enemyAnimation2.frames != NULL) {
+    enemyAnimation2.frame =
+        (enemyAnimation2.frame + 1) % enemyAnimation2.frames->frameCount;
+    UpdateModelAnimation(enemyModel2, *enemyAnimation2.frames,
+                         enemyAnimation2.frame);
   }
 }
 
@@ -315,7 +323,8 @@ bool gameLoop(float dT) {
 
 void loadModels() {
   playerModel = LoadModel("resources/models/monk.glb");
-  enemyModel = LoadModel("resources/models/viking1.glb");
+  enemyModel1 = LoadModel("resources/models/viking1.glb");
+  enemyModel2 = LoadModel("resources/models/viking2.glb");
   bossModel = LoadModel("resources/models/boss.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
   spearModel = LoadModel("resources/models/spear.glb");
@@ -336,8 +345,16 @@ void loadAnimations() {
   if (anims == NULL || animCount == 0) {
     printf("Couldn't load animation enemy\n");
   } else {
-    enemyAnimation.frames = &anims[0];
-    enemyAnimation.frame = 0;
+    enemyAnimation1.frames = &anims[0];
+    enemyAnimation1.frame = 0;
+  }
+  anims = NULL; // this is bad
+  anims = LoadModelAnimations("resources/models/viking2.glb", &animCount);
+  if (anims == NULL || animCount == 0) {
+    printf("Couldn't load animation enemy\n");
+  } else {
+    enemyAnimation2.frames = &anims[0];
+    enemyAnimation2.frame = 0;
   }
   anims = NULL; // this is bad
   anims = LoadModelAnimations("resources/models/monk.glb", &animCount);
@@ -351,7 +368,8 @@ void loadAnimations() {
 
 void unloadModels() {
   UnloadModel(playerModel);
-  UnloadModel(enemyModel);
+  UnloadModel(enemyModel1);
+  UnloadModel(enemyModel2);
   UnloadModel(barrierModel);
   UnloadModel(bossModel);
   UnloadModel(spearModel);
@@ -402,7 +420,8 @@ void resetGame() {
   player.pos.x = 0;
   player.pos.z = 0;
   player.pos.y = groundPosition.y + 1; // TODO calculate based on model
-  InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel, &bossModel);
+  InitEnemies(&enemyData, ENEMIES_PER_ROW, &enemyModel1, &enemyModel2,
+              &bossModel);
   InitBarriers(&barrierData, 4, 3, player.pos.y + 2, &barrierModel);
   for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
     playerShots[i].enabled = false;

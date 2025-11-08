@@ -325,7 +325,7 @@ void loadModels() {
   playerModel = LoadModel("resources/models/monk.glb");
   enemyModel1 = LoadModel("resources/models/viking1.glb");
   enemyModel2 = LoadModel("resources/models/viking2.glb");
-  bossModel = LoadModel("resources/models/boss.glb");
+  bossModel = LoadModel("resources/models/ship.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
   spearModel = LoadModel("resources/models/spear.glb");
 }
@@ -333,7 +333,7 @@ void loadModels() {
 void loadAnimations() {
   int animCount;
   ModelAnimation *anims;
-  anims = LoadModelAnimations("resources/models/boss.glb", &animCount);
+  anims = LoadModelAnimations("resources/models/ship.glb", &animCount);
   if (anims == NULL || animCount == 0) {
     printf("Couldn't load animation boss\n");
   } else {

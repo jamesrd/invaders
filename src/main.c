@@ -2,7 +2,7 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-#define GAME_TITLE "Space Invaders!"
+#define GAME_TITLE "Invasion of Lindisfarne!"
 
 int main(int argc, char *argv[]) {
   InitGame(GAME_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT);

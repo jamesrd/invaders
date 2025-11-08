@@ -1,4 +1,6 @@
-# Space Invaders!
+# Invasion of Lindisfarne!
+
+Protect Lindisfarne from the viking invaders!
 
 Space Invaders clone in Raylib.
 

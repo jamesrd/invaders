@@ -4,7 +4,7 @@
 #include "utility.h"
 #include <stdio.h>
 
-#define SCORE_STRING "SCORE: %d ^(;,;)^ HIGH SCORE: %d"
+#define SCORE_STRING "SCORE: %d <> HIGH SCORE: %d"
 #define TEXT_FORMAT_SCORE                                                      \
   TextFormat(SCORE_STRING, gameState.score, gameState.highScore)
 
@@ -92,8 +92,8 @@ void draw3dContent() {
 }
 
 void drawWelcomeScreen() {
-  DrawTextCentered("SPACE INVADERS!", gameWindow.xCenter, gameWindow.yCenter,
-                   gameWindow.fontTitleSize, WHITE);
+  DrawTextCentered("Invasion of Lindisfarne!", gameWindow.xCenter,
+                   gameWindow.yCenter, gameWindow.fontTitleSize, WHITE);
   // add instructions
 }
 

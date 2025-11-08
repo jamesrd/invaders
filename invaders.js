@@ -64,7 +64,7 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpt4cxa5fp.js
+// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqdw2lui1.js
 
   if (!Module['expectedDataFileDownloads']) Module['expectedDataFileDownloads'] = 0;
   Module['expectedDataFileDownloads']++;
@@ -194,25 +194,25 @@ Module['FS_createPath']("/resources", "models", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/resources/models/barrier.blend", "start": 0, "end": 533232}, {"filename": "/resources/models/barrier.glb", "start": 533232, "end": 535940}, {"filename": "/resources/models/boss.blend", "start": 535940, "end": 1361751}, {"filename": "/resources/models/boss.blend1", "start": 1361751, "end": 2187562}, {"filename": "/resources/models/boss.glb", "start": 2187562, "end": 2420054}, {"filename": "/resources/models/enemy.blend", "start": 2420054, "end": 3324799}, {"filename": "/resources/models/enemy.blend1", "start": 3324799, "end": 4229544}, {"filename": "/resources/models/enemy.glb", "start": 4229544, "end": 4670832}, {"filename": "/resources/models/player.blend", "start": 4670832, "end": 5665420}, {"filename": "/resources/models/player.glb", "start": 5665420, "end": 6125640}], "remote_package_size": 6125640});
+    loadPackage({"files": [{"filename": "/resources/models/background.blend", "start": 0, "end": 517002}, {"filename": "/resources/models/background.blend1", "start": 517002, "end": 1034004}, {"filename": "/resources/models/background.glb", "start": 1034004, "end": 1790840}, {"filename": "/resources/models/background.png", "start": 1790840, "end": 2546242}, {"filename": "/resources/models/barrier.blend", "start": 2546242, "end": 3113836}, {"filename": "/resources/models/barrier.blend1", "start": 3113836, "end": 3681430}, {"filename": "/resources/models/barrier.glb", "start": 3681430, "end": 3913634}, {"filename": "/resources/models/blocks.png", "start": 3913634, "end": 4143031}, {"filename": "/resources/models/boss.blend", "start": 4143031, "end": 4968842}, {"filename": "/resources/models/boss.blend1", "start": 4968842, "end": 5794653}, {"filename": "/resources/models/boss.glb", "start": 5794653, "end": 6027145}, {"filename": "/resources/models/enemy.blend", "start": 6027145, "end": 6931890}, {"filename": "/resources/models/enemy.blend1", "start": 6931890, "end": 7836635}, {"filename": "/resources/models/enemy.glb", "start": 7836635, "end": 8277923}, {"filename": "/resources/models/monk.blend", "start": 8277923, "end": 8960714}, {"filename": "/resources/models/monk.blend1", "start": 8960714, "end": 9643505}, {"filename": "/resources/models/monk.glb", "start": 9643505, "end": 9763333}, {"filename": "/resources/models/monk_cloak.png", "start": 9763333, "end": 9795548}, {"filename": "/resources/models/monk_head.png", "start": 9795548, "end": 9812022}, {"filename": "/resources/models/player.blend", "start": 9812022, "end": 10806610}, {"filename": "/resources/models/player.glb", "start": 10806610, "end": 11266830}, {"filename": "/resources/models/ship.blend", "start": 11266830, "end": 12181197}, {"filename": "/resources/models/ship.blend1", "start": 12181197, "end": 13095564}, {"filename": "/resources/models/ship.glb", "start": 13095564, "end": 13360272}, {"filename": "/resources/models/ship_body.png", "start": 13360272, "end": 13390170}, {"filename": "/resources/models/ship_mast.png", "start": 13390170, "end": 13395906}, {"filename": "/resources/models/ship_oar.png", "start": 13395906, "end": 13401641}, {"filename": "/resources/models/ship_sail.png", "start": 13401641, "end": 13412970}, {"filename": "/resources/models/ship_shield.png", "start": 13412970, "end": 13424013}, {"filename": "/resources/models/spear.blend", "start": 13424013, "end": 13943515}, {"filename": "/resources/models/spear.blend1", "start": 13943515, "end": 14463017}, {"filename": "/resources/models/spear.glb", "start": 14463017, "end": 14476521}, {"filename": "/resources/models/viking1.blend", "start": 14476521, "end": 15497642}, {"filename": "/resources/models/viking1.blend1", "start": 15497642, "end": 16518763}, {"filename": "/resources/models/viking1.glb", "start": 16518763, "end": 17379951}, {"filename": "/resources/models/viking2.blend", "start": 17379951, "end": 18394886}, {"filename": "/resources/models/viking2.blend1", "start": 18394886, "end": 19409821}, {"filename": "/resources/models/viking2.glb", "start": 19409821, "end": 20202561}, {"filename": "/resources/models/viking_hair.png", "start": 20202561, "end": 20409831}, {"filename": "/resources/models/viking_head.png", "start": 20409831, "end": 20465557}, {"filename": "/resources/models/viking_helmet.png", "start": 20465557, "end": 20523599}, {"filename": "/resources/models/viking_leg.png", "start": 20523599, "end": 20715223}, {"filename": "/resources/models/viking_lower_arm.png", "start": 20715223, "end": 20720958}, {"filename": "/resources/models/viking_shield.png", "start": 20720958, "end": 20797495}, {"filename": "/resources/models/viking_torso.png", "start": 20797495, "end": 20958880}, {"filename": "/resources/models/viking_upper_arm.png", "start": 20958880, "end": 21004502}], "remote_package_size": 21004502});
 
   })();
 
-// end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpt4cxa5fp.js
-// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqvnjz8sj.js
+// end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqdw2lui1.js
+// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmp027ax1sb.js
 
     // All the pre-js content up to here must remain later on, we need to run
     // it.
     if ((typeof ENVIRONMENT_IS_WASM_WORKER != 'undefined' && ENVIRONMENT_IS_WASM_WORKER) || (typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD) || (typeof ENVIRONMENT_IS_AUDIO_WORKLET != 'undefined' && ENVIRONMENT_IS_AUDIO_WORKLET)) Module['preRun'] = [];
     var necessaryPreJSTasks = Module['preRun'].slice();
-  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpqvnjz8sj.js
-// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpi7z3uzsj.js
+  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmp027ax1sb.js
+// include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmptgfgl6l2.js
 
     if (!Module['preRun']) throw 'Module.preRun should exist because file support used it; did a pre-js delete it?';
     necessaryPreJSTasks.forEach((task) => {
       if (Module['preRun'].indexOf(task) < 0) throw 'All preRun tasks that exist before user pre-js code should remain after; did you replace Module or modify Module.preRun?';
     });
-  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmpi7z3uzsj.js
+  // end include: /var/folders/m7/ymxnkmm90tgd92fzv621c7r40000gn/T/tmptgfgl6l2.js
 
 
 var arguments_ = [];
@@ -9417,49 +9417,49 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var ASM_CONSTS = {
-  1088840: () => { if (document.fullscreenElement) return 1; },  
- 1088886: () => { return Module.canvas.width; },  
- 1088918: () => { return parseInt(Module.canvas.style.width); },  
- 1088966: () => { document.exitFullscreen(); },  
- 1088993: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
- 1089066: () => { if (document.fullscreenElement) return 1; },  
- 1089112: () => { return Module.canvas.width; },  
- 1089144: () => { return screen.width; },  
- 1089169: () => { document.exitFullscreen(); },  
- 1089196: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
- 1089329: () => { return window.innerWidth; },  
- 1089355: () => { return window.innerHeight; },  
- 1089382: () => { if (document.fullscreenElement) return 1; },  
- 1089428: () => { return Module.canvas.width; },  
- 1089460: () => { return parseInt(Module.canvas.style.width); },  
- 1089508: () => { if (document.fullscreenElement) return 1; },  
- 1089554: () => { return Module.canvas.width; },  
- 1089586: () => { return screen.width; },  
- 1089611: () => { return window.innerWidth; },  
- 1089637: () => { return window.innerHeight; },  
- 1089664: () => { if (document.fullscreenElement) return 1; },  
- 1089710: () => { return Module.canvas.width; },  
- 1089742: () => { return screen.width; },  
- 1089767: () => { document.exitFullscreen(); },  
- 1089794: () => { if (document.fullscreenElement) return 1; },  
- 1089840: () => { return Module.canvas.width; },  
- 1089872: () => { return parseInt(Module.canvas.style.width); },  
- 1089920: () => { document.exitFullscreen(); },  
- 1089947: ($0) => { Module.canvas.style.opacity = $0; },  
- 1089985: () => { return screen.width; },  
- 1090010: () => { return screen.height; },  
- 1090036: () => { return window.screenX; },  
- 1090063: () => { return window.screenY; },  
- 1090090: () => { return window.devicePixelRatio; },  
- 1090126: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
- 1090179: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
- 1090230: () => { Module.canvas.style.cursor = 'none'; },  
- 1090267: ($0, $1, $2, $3) => { try { navigator.getGamepads()[$0].vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: $3, weakMagnitude: $1, strongMagnitude: $2 }); } catch (e) { try { navigator.getGamepads()[$0].hapticActuators[0].pulse($2, $3); } catch (e) { } } },  
- 1090523: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
- 1090574: () => { if (document.pointerLockElement) return 1; },  
- 1090621: () => { if (document.fullscreenElement) return 1; },  
- 1090667: () => { return window.innerWidth; },  
- 1090693: () => { return window.innerHeight; }
+  1088984: () => { if (document.fullscreenElement) return 1; },  
+ 1089030: () => { return Module.canvas.width; },  
+ 1089062: () => { return parseInt(Module.canvas.style.width); },  
+ 1089110: () => { document.exitFullscreen(); },  
+ 1089137: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
+ 1089210: () => { if (document.fullscreenElement) return 1; },  
+ 1089256: () => { return Module.canvas.width; },  
+ 1089288: () => { return screen.width; },  
+ 1089313: () => { document.exitFullscreen(); },  
+ 1089340: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
+ 1089473: () => { return window.innerWidth; },  
+ 1089499: () => { return window.innerHeight; },  
+ 1089526: () => { if (document.fullscreenElement) return 1; },  
+ 1089572: () => { return Module.canvas.width; },  
+ 1089604: () => { return parseInt(Module.canvas.style.width); },  
+ 1089652: () => { if (document.fullscreenElement) return 1; },  
+ 1089698: () => { return Module.canvas.width; },  
+ 1089730: () => { return screen.width; },  
+ 1089755: () => { return window.innerWidth; },  
+ 1089781: () => { return window.innerHeight; },  
+ 1089808: () => { if (document.fullscreenElement) return 1; },  
+ 1089854: () => { return Module.canvas.width; },  
+ 1089886: () => { return screen.width; },  
+ 1089911: () => { document.exitFullscreen(); },  
+ 1089938: () => { if (document.fullscreenElement) return 1; },  
+ 1089984: () => { return Module.canvas.width; },  
+ 1090016: () => { return parseInt(Module.canvas.style.width); },  
+ 1090064: () => { document.exitFullscreen(); },  
+ 1090091: ($0) => { Module.canvas.style.opacity = $0; },  
+ 1090129: () => { return screen.width; },  
+ 1090154: () => { return screen.height; },  
+ 1090180: () => { return window.screenX; },  
+ 1090207: () => { return window.screenY; },  
+ 1090234: () => { return window.devicePixelRatio; },  
+ 1090270: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
+ 1090323: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
+ 1090374: () => { Module.canvas.style.cursor = 'none'; },  
+ 1090411: ($0, $1, $2, $3) => { try { navigator.getGamepads()[$0].vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: $3, weakMagnitude: $1, strongMagnitude: $2 }); } catch (e) { try { navigator.getGamepads()[$0].hapticActuators[0].pulse($2, $3); } catch (e) { } } },  
+ 1090667: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
+ 1090718: () => { if (document.pointerLockElement) return 1; },  
+ 1090765: () => { if (document.fullscreenElement) return 1; },  
+ 1090811: () => { return window.innerWidth; },  
+ 1090837: () => { return window.innerHeight; }
 };
 function GetCanvasIdJs() { var canvasId = "#" + Module.canvas.id; var lengthBytes = lengthBytesUTF8(canvasId) + 1; var stringOnWasmHeap = _malloc(lengthBytes); stringToUTF8(canvasId, stringOnWasmHeap, lengthBytes); return stringOnWasmHeap; }
 

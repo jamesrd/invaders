@@ -315,7 +315,7 @@ bool gameLoop(float dT) {
 
 void loadModels() {
   playerModel = LoadModel("resources/models/monk.glb");
-  enemyModel = LoadModel("resources/models/enemy.glb");
+  enemyModel = LoadModel("resources/models/viking1.glb");
   bossModel = LoadModel("resources/models/boss.glb");
   barrierModel = LoadModel("resources/models/barrier.glb");
   spearModel = LoadModel("resources/models/spear.glb");
@@ -332,7 +332,7 @@ void loadAnimations() {
     bossAnimation.frame = 0;
   }
   anims = NULL; // this is bad
-  anims = LoadModelAnimations("resources/models/enemy.glb", &animCount);
+  anims = LoadModelAnimations("resources/models/viking1.glb", &animCount);
   if (anims == NULL || animCount == 0) {
     printf("Couldn't load animation enemy\n");
   } else {

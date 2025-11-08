@@ -126,7 +126,7 @@ void drawUI() {
 
 void drawFrame() {
   BeginDrawing();
-  ClearBackground((Color){50, 50, 50, 255});
+  ClearBackground((Color){50, 50, 250, 255});
   draw3dContent();
   drawUI();
   EndDrawing();

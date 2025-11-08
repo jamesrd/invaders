@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 #define SCORE_STRING "SCORE: %d <> HIGH SCORE: %d"
+#define INSTRUCTIONS                                                           \
+  "Arrow keys: move\nSpace: throw spear\nTab: Pause\nEnter: start game!"
 #define TEXT_FORMAT_SCORE                                                      \
   TextFormat(SCORE_STRING, gameState.score, gameState.highScore)
 
@@ -39,7 +41,6 @@ void drawEnemies() {
 }
 
 void drawBackground() {
-  // DrawPlane(groundPosition, groundSize, DARKGREEN);
   DrawModelEx(backgroundModel, (Vector3){0.0, 0.0, -1.5f}, (Vector3){1.0, 0, 0},
               90, (Vector3){11.0f, 1, 11.0f}, WHITE);
 }
@@ -95,10 +96,16 @@ void draw3dContent() {
   EndMode3D();
 }
 
+void drawInstructions() {
+  DrawTextCentered(INSTRUCTIONS, gameWindow.xCenter,
+                   gameWindow.yCenter + gameWindow.fontTitleSize,
+                   gameWindow.fontSmallSize, BLACK);
+}
+
 void drawWelcomeScreen() {
   DrawTextCentered("Invasion of Lindisfarne!", gameWindow.xCenter,
                    gameWindow.yCenter, gameWindow.fontTitleSize, WHITE);
-  // add instructions
+  drawInstructions();
 }
 
 void drawUI() {
@@ -112,9 +119,11 @@ void drawUI() {
     return;
   case Paused:
     message = "PAUSED";
+    drawInstructions();
     break;
   case GameOver:
     message = gameState.lives > 0 ? "YOU WIN!" : "YOU LOSE!";
+    drawInstructions();
     break;
   case Playing:
     message = NULL;

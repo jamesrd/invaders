@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO make sure to recompute when fullscreen engaged
 #define BOSS_END gameWindow.worldBottomRight.x + 2
 #define BOSS_BEGIN gameWindow.worldTopLeft.x - 2
 // 11 * 1.75 is the expected width of the enemy group

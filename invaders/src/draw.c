@@ -1,0 +1,146 @@
+#include "game.h"
+#include "raylib.h"
+#include "raymath.h"
+#include "utility.h"
+#include <stdio.h>
+
+#define SCORE_STRING "SCORE: %d <> HIGH SCORE: %d"
+#define INSTRUCTIONS                                                           \
+  "Arrow keys: move\nSpace: throw spear\nTab: Pause\nEnter: start game!"
+#define TEXT_FORMAT_SCORE                                                      \
+  TextFormat(SCORE_STRING, gameState.score, gameState.highScore)
+
+void drawEntity(Entity *e) {
+  DrawModel(*e->model, e->pos, e->scale, e->tint);
+  if (drawDebug) {
+    BoundingBox bb = GetModelBoundingBox(*e->model);
+    bb.max = Vector3Scale(bb.max, e->scale);
+    bb.min = Vector3Scale(bb.min, e->scale);
+    bb.max = Vector3Add(bb.max, e->pos);
+    bb.min = Vector3Add(bb.min, e->pos);
+    DrawBoundingBox(bb, RED);
+  }
+}
+
+void drawEnemies() {
+  if (enemyData.rows == NULL)
+    return;
+  for (int i = 0; i < enemyData.rowCount; i++) {
+    EnemyRow *er = enemyData.rows[i];
+    if (!er->enabled)
+      continue;
+    for (int j = 0; j < er->enemyCount; j++) {
+      Enemy e = er->enemies[j];
+      if (e.state == Active || e.state == Destroyed)
+        drawEntity(er->enemies[j].entity);
+    }
+  }
+  if (enemyData.boss->state != Disabled) {
+    drawEntity(enemyData.boss->entity);
+  }
+}
+
+void drawBackground() {
+  DrawModelEx(backgroundModel, (Vector3){0.0, 0.0, -1.5f}, (Vector3){1.0, 0, 0},
+              90, (Vector3){11.0f, 1, 11.0f}, WHITE);
+}
+
+void drawBarriers() {
+  for (int i = 0; i < barrierData.count; i++) {
+    Barrier b = barrierData.barriers[i];
+    if (b.hitPoints > 0) {
+      drawEntity(b.entity);
+    }
+  }
+}
+
+void drawPlayer() { drawEntity(&player); }
+
+void drawShots() {
+  for (int i = 0; i < MAX_PLAYER_SHOTS; i++) {
+    if (playerShots[i].enabled) {
+      DrawModel(*playerShots[i].model, playerShots[i].pos, playerShots[i].scale,
+                playerShots[i].color);
+    }
+  }
+  for (int i = 0; i < MAX_ENEMY_SHOTS; i++) {
+    if (enemyShots[i].enabled) {
+      DrawModelEx(*enemyShots[i].model, enemyShots[i].pos, (Vector3){1, 0, 0},
+                  180,
+                  (Vector3){enemyShots[i].scale, enemyShots[i].scale,
+                            enemyShots[i].scale},
+                  enemyShots[i].color);
+    }
+  }
+}
+
+void drawLives() {
+  Vector3 lp = (Vector3){gameWindow.worldTopLeft.x * 0.75, player.pos.y, 5.5f};
+  for (int i = 0; i < gameState.lives - 1; i++) {
+    DrawModelEx(*player.model, lp, (Vector3){0, 1, 0}, 180,
+                (Vector3){player.scale, player.scale, player.scale}, WHITE);
+    lp.x += player.scale * 1.5;
+  }
+}
+
+void draw3dContent() {
+  BeginMode3D(gameWindow.camera);
+  drawBackground();
+  drawEnemies();
+  drawBarriers();
+  drawPlayer();
+  drawShots();
+  if (gameState.state != Welcome) {
+    drawLives();
+  }
+  EndMode3D();
+}
+
+void drawInstructions() {
+  DrawTextCentered(INSTRUCTIONS, gameWindow.xCenter,
+                   gameWindow.yCenter + gameWindow.fontTitleSize,
+                   gameWindow.fontSmallSize, BLACK);
+}
+
+void drawWelcomeScreen() {
+  DrawTextCentered("Invasion of Lindisfarne!", gameWindow.xCenter,
+                   gameWindow.yCenter, gameWindow.fontTitleSize, WHITE);
+  drawInstructions();
+}
+
+void drawUI() {
+  const char *message = NULL;
+  if (showFps)
+    DrawFPS(10, 10);
+
+  switch (gameState.state) {
+  case Welcome:
+    drawWelcomeScreen();
+    return;
+  case Paused:
+    message = "PAUSED";
+    drawInstructions();
+    break;
+  case GameOver:
+    message = gameState.lives > 0 ? "YOU WIN!" : "YOU LOSE!";
+    drawInstructions();
+    break;
+  case Playing:
+    message = NULL;
+    break;
+  }
+  if (message != NULL) {
+    DrawTextCentered(message, gameWindow.xCenter, gameWindow.yCenter,
+                     gameWindow.fontLargeSize, WHITE);
+  }
+  DrawTextCentered(TEXT_FORMAT_SCORE, gameWindow.xCenter,
+                   gameWindow.fontSmallSize, gameWindow.fontSmallSize, WHITE);
+}
+
+void drawFrame() {
+  BeginDrawing();
+  ClearBackground((Color){50, 50, 250, 255});
+  draw3dContent();
+  drawUI();
+  EndDrawing();
+}

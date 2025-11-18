@@ -42,6 +42,7 @@ web/
 *.i*86
 *.x86_64
 *.hex
+src/invaders
 
 # Debug files
 *.dSYM/

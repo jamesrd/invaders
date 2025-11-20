@@ -71,7 +71,7 @@ ifeq ($(PLATFORM),PLATFORM_WEB)
         LDFLAGS += --preload-file $(BUILD_WEB_RESOURCES_PATH)
     endif
 else
-    CFLAGS += -std=c99
+    CFLAGS += -O2 -std=c99
 endif
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)

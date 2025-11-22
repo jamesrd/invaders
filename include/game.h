@@ -7,6 +7,7 @@
 
 #define MAX_PLAYER_SHOTS 4
 #define MAX_ENEMY_SHOTS 4
+#define FADE_ALPHA 40
 
 enum GameStates { Welcome, Paused, Playing, GameOver };
 

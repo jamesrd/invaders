@@ -123,7 +123,7 @@ void updateBossState(EnemyData *data, float dT) {
     break;
   case Destroyed:
     data->boss->entity->tint.a -= (ENEMY_FADE_RATE * dT);
-    if (data->boss->entity->tint.a <= 0.0) {
+    if (data->boss->entity->tint.a <= FADE_ALPHA) {
       data->boss->state = Disabled;
       data->boss->entity->pos.x = BOSS_BEGIN;
       data->timeToBoss = BOSS_COUNTDOWN;
@@ -169,7 +169,7 @@ int UpdateEnemyState(EnemyData *data, int rowCount, float dT) {
           }
         } else if (e->state == Destroyed) {
           e->entity->tint.a -= (ENEMY_FADE_RATE * dT);
-          if (e->entity->tint.a <= 0.0)
+          if (e->entity->tint.a <= FADE_ALPHA)
             e->state = Disabled;
         }
       }

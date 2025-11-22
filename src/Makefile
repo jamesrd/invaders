@@ -31,7 +31,7 @@ PLATFORM              ?= PLATFORM_DESKTOP
 # Define project variables
 PROJECT_NAME          ?= invaders
 PROJECT_VERSION       ?= 1.0
-PROJECT_BUILD_PATH    ?= .
+PROJECT_BUILD_PATH    ?= ../bin
 PROJECT_SOURCE_FILES  ?= main.c barrier.c draw.c enemy.c game.c utility.c
 
 RAYLIB_SRC_PATH       ?= ../../raylib/

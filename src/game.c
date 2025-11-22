@@ -275,9 +275,9 @@ void updateState(float dT) {
     playerCollisionDetection(dT);
   } else if (playerState == Destroyed) {
     player.tint.a -= PLAYER_FADE_RATE * dT;
-    if (player.tint.a <= 0.0) {
-      player.tint.a = 255;
+    if (player.tint.a <= FADE_ALPHA) {
       playerState = Active;
+      player.tint.a = 255;
     }
   }
   // move player shots

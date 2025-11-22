@@ -131,7 +131,7 @@ $(TARGET): $(OBJ) | $(BINDIR)
 	$(CC) -o $@ $? $(CFLAGS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 
 $(OBJDIR)/%.o : src/%.c | $(OBJDIR)
-	$(CC) -c $< -o $@ -Iinclude -D$(PLATFORM)
+	$(CC) -c $< -o $@ $(CFLAGS) -Iinclude -D$(PLATFORM)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
